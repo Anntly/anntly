@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- mapper 为根元素节点， 一个namespace对应一个mapper -->
+<mapper namespace="com.anntly.dish.mapper.CategoryMapper">
+    <update id="updateBatch" parameterType="java.util.List">
+        update tb_food_category
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="data_status =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item} then 0
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+    </update>
+</mapper>
+
