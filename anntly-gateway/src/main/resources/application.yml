@@ -17,6 +17,7 @@ zuul:
   retryable: true
   routes:
     dish-service: /dish/** # 将菜品微服务映射到 /dish/**
+    shop-service: /shop/** # 将菜品微服务映射到 /dish/**
     upload-service:
       path: /upload/**
       serviceId: upload-service
