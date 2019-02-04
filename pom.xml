@@ -9,6 +9,7 @@
         <module>anntly-common</module>
         <module>anntly-upload</module>
         <module>anntly-shop</module>
+        <module>anntly-area</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

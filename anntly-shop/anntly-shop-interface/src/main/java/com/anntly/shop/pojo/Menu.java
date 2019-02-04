@@ -1,5 +1,6 @@
 package com.anntly.shop.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -22,6 +23,8 @@ public class Menu {
     @KeySql(useGeneratedKeys = true)
     private Long id;
 
+    private String name;
+
     private Long restaurantId;
 
     private String description;
@@ -30,7 +33,9 @@ public class Menu {
 
     private Boolean dataStatus;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 }

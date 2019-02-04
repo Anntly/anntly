@@ -1,8 +1,11 @@
 package com.anntly.shop.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -23,6 +26,7 @@ public class Restaurant {
     @KeySql(useGeneratedKeys = true)
     private Long id;
 
+    @Column(name = "`name`")
     private String name;
 
     private String description;
@@ -34,6 +38,8 @@ public class Restaurant {
     private Integer cid;
 
     private Integer aid;
+
+    private Integer nid;
 
     private String address;
 
@@ -51,10 +57,15 @@ public class Restaurant {
 
     private Integer star;
 
+    @Column(name = "`avg`")
     private BigDecimal avg;
 
+    @DateTimeFormat(pattern="HH:mm")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="HH:mm")
     private Date beginTime;
 
+    @DateTimeFormat(pattern="HH:mm")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="HH:mm")
     private Date endTime;
 
     private String license;
@@ -64,7 +75,11 @@ public class Restaurant {
 
     private BigDecimal deliveryArea;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    private Boolean dataStatus;
 }

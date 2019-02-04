@@ -1,9 +1,12 @@
 package com.anntly.common.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.List;
 
 /**
  * @author soledad
@@ -17,9 +20,14 @@ import javax.persistence.Table;
 public class Area {
 
     @Id
-    private Integer Id;
+    @JsonProperty("value")
+    private Integer id;
 
-    private String Name;
+    @JsonProperty("label")
+    private String name;
 
-    private Integer Pid;
+    private Integer pid;
+
+    @Transient
+    private List<Area> children;
 }
