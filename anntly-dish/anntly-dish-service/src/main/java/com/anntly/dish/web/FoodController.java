@@ -5,6 +5,7 @@ import com.anntly.common.exception.AnnException;
 import com.anntly.common.vo.PageResult;
 import com.anntly.dish.pojo.Food;
 import com.anntly.dish.service.FoodService;
+import com.anntly.dish.vo.Node;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +82,14 @@ public class FoodController {
         }
         foodService.deleteFoods(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/cid/{cid}")
+    @ApiOperation(value="根据分类Id查询所有菜品", notes="无")
+    public ResponseEntity<List<Node>> queryFoodsByCid(@PathVariable("cid") Long cid){
+        if(null == cid){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(foodService.queryFoodsByCid(cid));
     }
 }

@@ -22,4 +22,10 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @return
      */
     List<Menu> queryPage(@Param("params") MenuParams params);
+
+    /**
+     * 根据id批量删除节点(更新data_status为0)
+     * @param ids
+     */
+    int updateBatch(@Param("list") List<Long> ids);
 }

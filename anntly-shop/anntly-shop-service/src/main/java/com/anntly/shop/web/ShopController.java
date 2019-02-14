@@ -47,7 +47,8 @@ public class ShopController {
             params = JsonUtils.parse(pageRequest.getKey(), RestaurantParams.class);
         }
         if(null != pageRequest.getSortBy() && null != pageRequest.getDesc()){
-            params.setOrderVal(pageRequest.getSortBy()+(pageRequest.getDesc()?" desc":" asc"));
+            params.setSname(pageRequest.getSortBy());
+            params.setSord(pageRequest.getDesc()?" desc":" asc");
         }
         return ResponseEntity.ok(restaurantService.queryPage(pageRequest,params,userId));
     }
@@ -86,7 +87,7 @@ public class ShopController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value="删除单个菜品", notes="命名需要与数据库对应")
+    @ApiOperation(value="删除单个餐厅", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable("id") Long id){
         if(null == id){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);

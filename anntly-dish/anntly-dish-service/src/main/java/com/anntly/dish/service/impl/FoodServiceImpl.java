@@ -8,6 +8,7 @@ import com.anntly.dish.dto.FoodKey;
 import com.anntly.dish.mapper.FoodMapper;
 import com.anntly.dish.pojo.Food;
 import com.anntly.dish.service.FoodService;
+import com.anntly.dish.vo.Node;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -72,6 +73,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    @Transactional
     public void changeSalable(Long id) {
         int count = foodMapper.changeSalable(id);
         if(count <= 0){
@@ -116,5 +118,14 @@ public class FoodServiceImpl implements FoodService {
         if(count <= 0){
             throw new AnnException(ExceptionEnum.DELETE_FAILED);
         }
+    }
+
+    @Override
+    public List<Node> queryFoodsByCid(Long cid) {
+        List<Node> nodes = foodMapper.queryFoodsByCid(cid);
+        if(CollectionUtils.isEmpty(nodes)){
+            throw new AnnException(ExceptionEnum.FOODS_NOT_FOUND);
+        }
+        return nodes;
     }
 }

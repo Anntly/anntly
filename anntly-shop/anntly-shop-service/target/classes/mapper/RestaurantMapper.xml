@@ -25,9 +25,6 @@
             </if>
             and user_id = #{userId}
             and data_status = 1
-            <if test="params.orderVal != null and params.orderVal != ''">
-                order by ${params.orderVal}
-            </if>
         </where>
     </sql>
 
@@ -35,6 +32,9 @@
         select id,`name`,description,pid,cid,aid,address,phone,pic,photo,main_foods,star,
         `avg`,begin_time,end_time,license,status,delivery_area from tb_restaurant
         <include refid="where" />
+        <if test="params.sname != null and params.sname != '' and params.sord != null and params.sord != ''">
+            order by ${params.sname} ${params.sord}
+        </if>
     </select>
 
     <update id="updateBatch" parameterType="java.util.List">

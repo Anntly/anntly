@@ -5,6 +5,8 @@ import com.anntly.common.vo.PageResult;
 import com.anntly.shop.pojo.Menu;
 import com.anntly.shop.vo.MenuParams;
 
+import java.util.List;
+
 /**
  * @author soledad
  * @Title: MenuService
@@ -19,4 +21,8 @@ public interface MenuService {
     void saveMenu(Menu menu);
 
     void updateMenu(Menu menu);
+
+    void deleteMenu(Long id);
+
+    void deleteMenus(List<Long> ids);
 }

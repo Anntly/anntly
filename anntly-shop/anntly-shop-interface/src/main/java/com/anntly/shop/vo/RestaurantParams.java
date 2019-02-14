@@ -22,5 +22,7 @@ public class RestaurantParams {
 
     private Integer status;
 
-    private String orderVal;
+    private String sname;
+
+    private String sord;
 }

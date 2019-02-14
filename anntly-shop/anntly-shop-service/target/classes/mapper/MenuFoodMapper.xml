@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- mapper 为根元素节点， 一个namespace对应一个mapper -->
+<mapper namespace="com.anntly.shop.mapper.MenuFoodMapper">
+
+    <sql id="where">
+
+    </sql>
+
+    <select id="queryPage" resultType="com.anntly.shop.pojo.MenuFood">
+        select m.*,f.name as categoryName from tb_menu_food as m,tb_menu_food_cat as f
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and m.id =#{params.id}
+            </if>
+            <if test="params.menuId != null and params.menuId != ''">
+                and m.menu_id =#{params.menuId}
+            </if>
+            <if test="params.showName != null and params.showName != ''">
+                and m.show_name like concat(concat('%',#{params.showName}),'%')
+            </if>
+            <if test="params.startPrice != null and params.startPrice != ''">and price <![CDATA[>=]]> #{params.startPrice}</if>
+            <if test="params.endPrice != null and params.endPrice != ''">and price <![CDATA[<=]]>#{params.endPrice}</if>
+
+        </where>
+
+        and m.data_status = 1
+        and f.data_status = 1
+        and f.id = m.m_cid
+        <if test="params.sname != null and params.sname != '' and params.sord != null and params.sord != ''">
+            order by ${params.sname} ${params.sord}
+        </if>
+    </select>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        update tb_menu_food
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="data_status =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item} then 0
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <select id="queryFoodsByCid" resultType="java.lang.Long">
+        select * from tb_menu_food where m_cid in
+        <foreach collection="idList" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>
+

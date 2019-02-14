@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author soledad
  * @Title: MenuController
@@ -39,7 +41,8 @@ public class MenuController {
             params = JsonUtils.parse(pageRequest.getKey(), MenuParams.class);
         }
         if(null != pageRequest.getSortBy() && null != pageRequest.getDesc()){
-            params.setOrderVal(pageRequest.getSortBy()+(pageRequest.getDesc()?" desc":" asc"));
+            params.setSname(pageRequest.getSortBy());
+            params.setSord(pageRequest.getDesc()?" desc":" asc");
         }
         return ResponseEntity.ok(menuService.queryPage(pageRequest,params));
     }
@@ -67,4 +70,24 @@ public class MenuController {
     }
 
     // 删除需要与菜单菜品信息连表删除
+    // 删除分类会联动删除该分类下的所有菜品
+    @DeleteMapping("/{id}")
+    @ApiOperation(value="删除单个菜品分类", notes="命名需要与数据库对应")
+    public ResponseEntity<Void> deleteMenuCat(@PathVariable("id") Long id){
+        if(null == id){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        menuService.deleteMenu(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/ids")
+    @ApiOperation(value="批量删除菜品分类", notes="无")
+    public ResponseEntity<Void> deleteMenuCat(@RequestParam("ids") List<Long> ids){
+        if(null == ids){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        menuService.deleteMenus(ids);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

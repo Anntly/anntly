@@ -2,6 +2,7 @@ package com.anntly.dish.service;
 
 import com.anntly.common.vo.PageResult;
 import com.anntly.dish.pojo.Food;
+import com.anntly.dish.vo.Node;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface FoodService {
     void deleteFood(Long id);
 
     void deleteFoods(List<Long> ids);
+
+    List<Node> queryFoodsByCid(Long cid);
 }
