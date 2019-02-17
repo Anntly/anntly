@@ -9,14 +9,14 @@ import java.util.Date;
 
 /**
  * @author soledad
- * @Title: FooEvaluate
+ * @Title: FoodEvaluate
  * @ProjectName anntly
  * @Description: 菜单菜品评价类
  * @date 2019/1/2421:30
  */
 @Data
 @Table(name = "tb_food_evaluate")
-public class FooEvaluate {
+public class FoodEvaluate {
 
     @Id
     @KeySql(useGeneratedKeys = true)

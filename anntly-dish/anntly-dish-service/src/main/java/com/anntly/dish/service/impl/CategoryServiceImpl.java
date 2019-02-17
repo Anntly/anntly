@@ -160,6 +160,9 @@ public class CategoryServiceImpl implements CategoryService {
         if(count <= 1){
             categoryMapper.changeParentStatus(category.getPid());
         }
+
+        // TODO 获取所有该分类的菜品以及菜单菜品，需要保证分布式事务
+
         // 获取所有需要删除的节点的ID，做批量删除，减少与数据库交互的次数
         // 修改为批量更新 data_status 为0
         List<Long> ids = new ArrayList<>();

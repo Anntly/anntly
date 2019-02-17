@@ -1,5 +1,7 @@
 package com.anntly.shop.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -39,7 +41,11 @@ public class Room {
 
     private Integer status;
 
+    @JsonProperty("create_time")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @JsonProperty("update_time")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 }

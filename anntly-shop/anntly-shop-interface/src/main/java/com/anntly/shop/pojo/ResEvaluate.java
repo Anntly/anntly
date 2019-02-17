@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2019/1/2419:34
  */
 @Data
-@Table(name = "tb_food_evaluate")
+@Table(name = "tb_restaurant_evaluate")
 public class ResEvaluate {
 
     @Id
