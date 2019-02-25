@@ -15,7 +15,10 @@ public enum ExceptionEnum {
     SAVE_FAILED(500,"数据添加失败"),
     UPDATE_FAILED(500,"数据更新失败"),
     DELETE_FAILED(500,"数据删除失败"),
-    FILE_UPLOAD_ERROR(500,"文件上传失败")
+    FILE_UPLOAD_ERROR(500,"文件上传失败"),
+    USERNAME_OR_PASSWORD_ERROR(401,"用户名或密码错误"),
+    LOGIN_FAILED(500,"登录失败"),
+    LOGOUT_FAILED(500,"退出失败"),
     ;
 
     private int code;

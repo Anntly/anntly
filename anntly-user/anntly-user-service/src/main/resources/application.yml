@@ -1,0 +1,67 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://192.168.25.129:3306/anntly?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&useAffectedRows=true&allowMultiQueries=true
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+  redis:
+    host: 192.168.25.129
+    port: 6379
+    password: anntly
+    jedis:
+      pool:
+        max-active: 3
+        max-idle: 3
+        min-idle: 1
+        max-wait: -1 # 连接池最大等待时间 -1表示没有限制
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+    status-page-url:
+      http://${spring.cloud.client.ipAddress}:${server.port}/swagger-ui.html
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true  #开启驼峰
+  mapper-locations: classpath:mapper/*.xml
+feign:
+  hystrix:
+    enabled: true
+auth:
+  tokenValiditySeconds: 1200  #token存储到redis的过期时间
+  clientId: AnWebApp
+  clientSecret: AnWebApp
+  cookieDomain: anntly.com
+  cookieMaxAge: -1
+ribbon:
+  ConnectTimeout: 1000 # 连接超时时间(ms)
+  ReadTimeout: 30000 # 通信超时时间(ms)
+  MaxAutoRetriesNextServer: 0 # 同一服务不同实例的重试次数
+  MaxAutoRetries: 0 # 同一实例的重试次数
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMillisecond: 60000 # 熔断超时时长：10000ms
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          # 禁用熔断器超时时间，不推荐
+          enabled: false

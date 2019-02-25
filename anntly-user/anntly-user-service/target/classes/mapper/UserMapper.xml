@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- mapper 为根元素节点， 一个namespace对应一个mapper -->
+<mapper namespace="com.anntly.user.mapper.UserMapper">
+
+
+    <resultMap type="com.anntly.user.pojo.User" id="userResultMap">
+        <id column="id" property="id"/>
+        <result column="phone" property="phone"></result>
+        <result column="email" property="email"></result>
+        <result column="icon" property="icon"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <collection property="authorities" ofType="com.anntly.user.pojo.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="description" property="description"/>
+        </collection>
+    </resultMap>
+
+    <select id="findUserByUsername" resultMap="userResultMap">
+           select
+                  u.id,
+                  u.phone,
+                  u.email,
+                  u.icon,
+                  u.username,
+                  u.password,
+                  r.id as rid,
+                  r.name as rname,
+                  r.description
+           from tb_user u,tb_role r ,tb_user_role ur
+           where u.id = ur.user_id and r.id = ur.role_id and u.username = #{username}
+    </select>
+</mapper>
+

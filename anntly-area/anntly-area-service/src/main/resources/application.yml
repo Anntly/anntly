@@ -27,3 +27,11 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true  #开启驼峰
   mapper-locations: classpath:mapper/*.xml
+
+#security:
+#  oauth2:
+#    client:
+#      access-token-uri: http://127.0.0.1:7777/uaa/oauth/token #令牌端点
+#      user-authorization-uri: http://127.0.0.1:7777/uaa/oauth/authorize #授权端点
+#      client-id: area_server #OAuth2客户端ID
+#      client-secret: areasecret #OAuth2客户端密钥

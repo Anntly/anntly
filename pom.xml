@@ -10,6 +10,8 @@
         <module>anntly-upload</module>
         <module>anntly-shop</module>
         <module>anntly-area</module>
+        <module>anntly-auth</module>
+        <module>anntly-user</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
