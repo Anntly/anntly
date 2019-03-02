@@ -2,12 +2,14 @@ package com.anntly.shop.service.impl;
 
 import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
+import com.anntly.common.pojo.UserInfo;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
 import com.anntly.shop.dto.RestaurantNode;
 import com.anntly.shop.mapper.RestaurantMapper;
 import com.anntly.shop.pojo.Restaurant;
 import com.anntly.shop.service.RestaurantService;
+import com.anntly.shop.utils.AnOauth2Utils;
 import com.anntly.shop.vo.RestaurantParams;
 import com.anntly.shop.dto.RestaurantDto;
 import com.github.pagehelper.PageHelper;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.anntly.shop.client.AreaClient;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,9 +42,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     private AreaClient areaClient;
 
     @Override
-    public PageResult<RestaurantDto> queryPage(PageRequest pageRequest, RestaurantParams params, Long userId) {
+    public PageResult<RestaurantDto> queryPage(HttpServletRequest request,PageRequest pageRequest, RestaurantParams params) {
+        // 获取登录用户
+        AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
+        UserInfo user = anOauth2Utils.getUserJwtFromHeader(request);
         PageHelper.startPage(pageRequest.getPage(),pageRequest.getRows());
-        List<RestaurantDto> restaurantDtos = restaurantMapper.queryPage(params, userId);
+        List<RestaurantDto> restaurantDtos = restaurantMapper.queryPage(params, user.getId());
         for (RestaurantDto restaurantDto : restaurantDtos) {
             restaurantDto.initDatas();
         }

@@ -1,6 +1,9 @@
 package com.anntly.shop.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
@@ -23,8 +26,6 @@ public class Employee {
     @KeySql(useGeneratedKeys = true)
     private Long id;
 
-    private String code;
-
     private String name;
 
     private Long restaurantId;
@@ -37,16 +38,26 @@ public class Employee {
 
     private Integer age;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
     private Date birthday;
 
     private String phone;
 
     private BigDecimal salary;
 
+    @JsonProperty("create_time")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
     private Date createTime;
 
+    @JsonProperty("expire_time")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
     private Date expireTime;
 
+    @JsonProperty("update_time")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date updateTime;
 
     // 员工状态

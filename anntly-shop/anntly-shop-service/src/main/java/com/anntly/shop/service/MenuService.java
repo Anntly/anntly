@@ -2,6 +2,7 @@ package com.anntly.shop.service;
 
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Menu;
 import com.anntly.shop.vo.MenuParams;
 
@@ -25,4 +26,6 @@ public interface MenuService {
     void deleteMenu(Long id);
 
     void deleteMenus(List<Long> ids);
+
+    List<Node> queryNodesByRid(Long restaurantId);
 }

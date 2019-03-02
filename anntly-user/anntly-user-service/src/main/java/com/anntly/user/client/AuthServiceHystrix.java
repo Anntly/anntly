@@ -13,4 +13,10 @@ public class AuthServiceHystrix implements AuthServiceClient {
         log.warn("Fallback of getToken is executed");
         return null;
     }
+
+    @Override
+    public JWT refreshToken(String authorization, String type, String refresh_token) {
+        log.warn("Fallback of getToken is executed");
+        return null;
+    }
 }

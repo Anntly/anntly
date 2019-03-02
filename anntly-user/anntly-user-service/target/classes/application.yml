@@ -45,7 +45,7 @@ auth:
   clientId: AnWebApp
   clientSecret: AnWebApp
   cookieDomain: anntly.com
-  cookieMaxAge: -1
+  cookieMaxAge: 72000   # -1为永不过期
 ribbon:
   ConnectTimeout: 1000 # 连接超时时间(ms)
   ReadTimeout: 30000 # 通信超时时间(ms)
@@ -65,3 +65,11 @@ hystrix:
         timeout:
           # 禁用熔断器超时时间，不推荐
           enabled: false
+
+#anntly:
+#  security:
+#    code:
+#      image:
+#        length: 4
+#        width: 300
+#        url: /user,/user/*

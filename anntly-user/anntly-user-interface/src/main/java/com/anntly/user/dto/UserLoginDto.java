@@ -16,6 +16,8 @@ public class UserLoginDto {
 
     private String token; //返回的token
 
+    private String reToken; // refreshToken
+
     private String username;
 
     private String avatar;

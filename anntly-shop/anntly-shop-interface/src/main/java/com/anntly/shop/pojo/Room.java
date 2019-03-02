@@ -7,6 +7,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -27,25 +28,29 @@ public class Room {
 
     private Long restaurantId;
 
-    private Integer type;
+    private String name;
+
+    private Boolean type;
 
     private Integer star;
 
+    // 最低消费
     private BigDecimal minComsume;
 
     private Integer capacity;
 
-    private String employeeCode;
+    private String employeeId;
 
+    @Transient
     private String employeeName;
 
-    private Integer status;
+    private Boolean status;
 
     @JsonProperty("create_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date createTime;
 
     @JsonProperty("update_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date updateTime;
 }

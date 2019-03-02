@@ -4,6 +4,8 @@ import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.mapper.MenuMapper;
 import com.anntly.shop.pojo.Menu;
 import com.anntly.shop.service.MenuCatService;
@@ -14,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,5 +88,14 @@ public class MenuServiceImpl implements MenuService {
         menuCatService.deleteMenuCats(cids);
 
         menuMapper.updateBatch(ids);
+    }
+
+    @Override
+    public List<Node> queryNodesByRid(Long restaurantId) {
+        List<Node> nodes = menuMapper.queryNodesByRid(restaurantId);
+        if(CollectionUtils.isEmpty(nodes)){
+            throw new AnnException(ExceptionEnum.Menus_NOT_FOUND);
+        }
+        return nodes;
     }
 }

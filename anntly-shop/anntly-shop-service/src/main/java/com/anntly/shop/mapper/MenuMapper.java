@@ -1,9 +1,11 @@
 package com.anntly.shop.mapper;
 
 import com.anntly.common.mapper.BaseMapper;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Menu;
 import com.anntly.shop.vo.MenuParams;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -28,4 +30,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param ids
      */
     int updateBatch(@Param("list") List<Long> ids);
+
+    @Select("select id,name from tb_menu where restaurant_id = #{restaurantId}")
+    List<Node> queryNodesByRid(@Param("restaurantId") Long restaurantId);
 }

@@ -2,6 +2,7 @@ package com.anntly.user.service.impl;
 
 import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
+import com.anntly.common.utils.CookieUtil;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.user.client.AuthServiceClient;
 import com.anntly.user.dto.UserLoginDto;
@@ -98,10 +99,33 @@ public class UserServiceImpl implements UserService {
         userLoginDto.setUsername(username);
         userLoginDto.setToken(authToken.getAccessToken());
         userLoginDto.setAvatar(user.getIcon());
+        userLoginDto.setReToken(authToken.getRefresh_token());
         userLoginDto.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
 
         userToken.setUserLoginDto(userLoginDto);
         return userToken;
+    }
+
+    @Override
+    public AuthToken reLogin(String refresh_token, String clientId, String clientSecret) {
+        String httpbasic = getHttpBasic(clientId,clientSecret);
+        // 从auth-service获取JWT
+        JWT jwt = client.refreshToken(httpbasic, "refresh_token",refresh_token);
+        // 当获取失败的时候就抛出异常
+        if(jwt == null){
+            throw new AnnException(ExceptionEnum.REFRESH_FAILED);
+        }
+        AuthToken authToken = new AuthToken();
+        authToken.setAccessToken(jwt.getJti()); //用户身份令牌，返回用户短的，再去redis查询长的
+        authToken.setRefresh_token(jwt.getRefresh_token()); //刷新令牌
+        authToken.setJwt_token(jwt.getAccess_token()); //jwt令牌
+
+        // 将令牌存储在redis
+        boolean isToken = saveToken(authToken.getAccessToken(), JsonUtils.serialize(authToken),tokenValiditySeconds);
+        if(!isToken){
+            throw new AnnException(ExceptionEnum.LOGIN_FAILED);
+        }
+        return authToken;
     }
 
     @Override
@@ -119,6 +143,10 @@ public class UserServiceImpl implements UserService {
     public AuthToken getUserToken(String token) {
         String key = "user_token:" + token;
         String value = redisTemplate.opsForValue().get(key);
+        // redis中的token已经过期了 就重新请求
+        if(StringUtils.isEmpty(value)){
+            throw new AnnException(ExceptionEnum.TOKEN_NOT_FOUND);
+        }
         // 转换为AuthToken对象
         AuthToken authToken = JsonUtils.parse(value, AuthToken.class);
         return authToken;

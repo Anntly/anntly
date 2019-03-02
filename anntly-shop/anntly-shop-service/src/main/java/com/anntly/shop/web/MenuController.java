@@ -5,6 +5,7 @@ import com.anntly.common.exception.AnnException;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Menu;
 import com.anntly.shop.service.MenuService;
 import com.anntly.shop.vo.MenuParams;
@@ -89,5 +90,14 @@ public class MenuController {
         }
         menuService.deleteMenus(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/re")
+    @ApiOperation(value="根据餐厅Id查询菜单Nodes", notes="无")
+    public ResponseEntity<List<Node>> queryNodesByRid(@RequestParam("restaurantId") Long restaurantId){
+        if(null == restaurantId){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(menuService.queryNodesByRid(restaurantId));
     }
 }

@@ -22,4 +22,5 @@ public class AnShopApplication {
     public static void main(String[] args) {
         SpringApplication.run(AnShopApplication.class,args);
     }
+
 }

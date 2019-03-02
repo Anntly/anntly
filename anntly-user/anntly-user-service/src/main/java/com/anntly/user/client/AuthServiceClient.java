@@ -13,4 +13,10 @@ public interface AuthServiceClient {
                  @RequestParam("grant_type") String type,
                  @RequestParam("username") String username,
                  @RequestParam("password") String password);
+
+    @PostMapping("/oauth/token")
+    JWT refreshToken(@RequestHeader("Authorization") String authorization,
+                 @RequestParam("grant_type") String type,
+                 @RequestParam("refresh_token") String refresh_token
+    );
 }

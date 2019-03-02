@@ -21,4 +21,6 @@ public interface UserService {
     AuthToken getUserToken(String token);
 
     boolean removeToken(String accessToken);
+
+    AuthToken reLogin(String refresh_token, String clientId, String clientSecret);
 }

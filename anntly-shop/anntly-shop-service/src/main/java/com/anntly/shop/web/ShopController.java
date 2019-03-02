@@ -2,12 +2,14 @@ package com.anntly.shop.web;
 
 import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
+import com.anntly.common.pojo.UserInfo;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
 import com.anntly.shop.dto.RestaurantNode;
 import com.anntly.shop.pojo.Restaurant;
 import com.anntly.shop.service.RestaurantService;
+import com.anntly.shop.utils.AnOauth2Utils;
 import com.anntly.shop.vo.RestaurantParams;
 import com.anntly.shop.dto.RestaurantDto;
 import io.swagger.annotations.Api;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -36,9 +39,8 @@ public class ShopController {
 
     @GetMapping("/page")
     @ApiOperation(value="获取餐厅列表", notes="命名需要与数据库对应")
-    public ResponseEntity<PageResult<RestaurantDto>> queryRestaurantPage(PageRequest pageRequest){
-        // TODO 需要与userId相绑定，目前先查询出所有店铺
-        Long userId = 1L;
+    public ResponseEntity<PageResult<RestaurantDto>> queryRestaurantPage(HttpServletRequest request,
+                                                                         PageRequest pageRequest){
         RestaurantParams params = null;
         if(null == pageRequest){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -50,26 +52,31 @@ public class ShopController {
             params.setSname(pageRequest.getSortBy());
             params.setSord(pageRequest.getDesc()?" desc":" asc");
         }
-        return ResponseEntity.ok(restaurantService.queryPage(pageRequest,params,userId));
+        return ResponseEntity.ok(restaurantService.queryPage(request,pageRequest,params));
     }
 
     @GetMapping("/res")
     @ApiOperation(value="获取餐厅下拉选项", notes="命名需要与数据库对应")
-    public ResponseEntity<List<RestaurantNode>> queryNodes(){
+    public ResponseEntity<List<RestaurantNode>> queryNodes(HttpServletRequest request){
+        // 获取登录用户
+        AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
+        UserInfo user = anOauth2Utils.getUserJwtFromHeader(request);
         // TODO 需要与userId相绑定，目前先查询出所有店铺
-        Long userId = 1L;
-        return ResponseEntity.ok(restaurantService.queryNodes(userId));
+        // Long userId = 1L;
+        return ResponseEntity.ok(restaurantService.queryNodes(user.getId()));
     }
 
     @PostMapping
     @ApiOperation(value="上传菜品", notes="命名需要与数据库对应")
-    public ResponseEntity<Void> saveRestaurant(Restaurant restaurant){
+    public ResponseEntity<Void> saveRestaurant(Restaurant restaurant,HttpServletRequest request){
         // TODO 需要与userId相绑定
-        Long userId = 1L;
+        //Long userId = 1L;
+        AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
+        UserInfo user = anOauth2Utils.getUserJwtFromHeader(request);
         if(null == restaurant){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
-        restaurant.setUserId(userId);
+        restaurant.setUserId(user.getId());
         restaurantService.saveRestaurant(restaurant);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -77,8 +84,6 @@ public class ShopController {
     @PutMapping
     @ApiOperation(value="更新菜品", notes="命名需要与数据库对应")
     public ResponseEntity<Void> updateRestaurant(Restaurant restaurant){
-        // TODO 需要与userId相绑定
-        Long userId = 1L;
         if(null == restaurant){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
@@ -89,6 +94,7 @@ public class ShopController {
     @DeleteMapping("/{id}")
     @ApiOperation(value="删除单个餐厅", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable("id") Long id){
+        // TODO 待定不删除餐厅下的所有房间，餐桌
         if(null == id){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
@@ -99,6 +105,7 @@ public class ShopController {
     @DeleteMapping("/ids")
     @ApiOperation(value="批量删除餐厅", notes="无")
     public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
+        // TODO 待定不删除餐厅下的所有房间，餐桌
         if(null == ids){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }

@@ -60,8 +60,16 @@ public class UserController {
     public ResponseEntity<UserLoginDto> login(@RequestBody @Valid LoginRequest loginRequest) {
         UserToken userToken = userService.login(loginRequest.getUsername(), loginRequest.getPassword(), clientId, clientSecret);
         // 将token存储到cookie
-        saveCookie(userToken.getAuthToken().getAccessToken());
+        saveCookie(userToken.getAuthToken().getAccessToken(),userToken.getAuthToken().getRefresh_token());
         return ResponseEntity.ok(userToken.getUserLoginDto());
+    }
+
+    @PostMapping("/relogin")
+    public ResponseEntity<AuthToken> reLogin(String refreshToken) {
+        AuthToken authToken = userService.reLogin(refreshToken, clientId, clientSecret);
+        // 将token存储到cookie
+        saveCookie(authToken.getAccessToken(),authToken.getRefresh_token());
+        return ResponseEntity.ok(authToken);
     }
 
 //    @GetMapping("/query")
@@ -80,27 +88,31 @@ public class UserController {
     }
 
     @PostMapping("/seeyou")
-    public ResponseEntity<Void> userLogOut(String token){
+    public ResponseEntity<Void> userLogOut(String token,String refreshToken){
         // 删除redis中的token
         boolean result = userService.removeToken(token);
         System.out.println("删除"+result);
         // 删除cookie中的token
-        clearCookie(token);
+        clearCookie(token,refreshToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // 将令牌存储在cookie
-    private void saveCookie(String token){
+    private void saveCookie(String token,String refreshToken){
+        // 需要存入refresh——token
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         //HttpServletResponse response,String domain,String path, String name, String value, int maxAge,boolean httpOnly
         CookieUtil.addCookie(response,cookieDomain,"/","uid",token,cookieMaxAge,false);
+        CookieUtil.addCookie(response,cookieDomain,"/","reid",refreshToken,cookieMaxAge,false);
     }
 
     // 删除cookie
-    private void clearCookie(String token){
+    private void clearCookie(String token,String refreshToken){
+        // 需要删除refresh——token
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         //HttpServletResponse response,String domain,String path, String name, String value, int maxAge,boolean httpOnly
         CookieUtil.addCookie(response,cookieDomain,"/","uid",token,0,false);
+        CookieUtil.addCookie(response,cookieDomain,"/","reid",refreshToken,0,false);
     }
 
     @GetMapping(value = "/foo")

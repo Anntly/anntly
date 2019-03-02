@@ -7,6 +7,7 @@ import com.anntly.shop.pojo.Restaurant;
 import com.anntly.shop.vo.RestaurantParams;
 import com.anntly.shop.dto.RestaurantDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -18,7 +19,7 @@ import java.util.List;
  * @date 2019/1/2421:07
  */
 public interface RestaurantService {
-    PageResult<RestaurantDto> queryPage(PageRequest pageRequest, RestaurantParams params, Long userId);
+    PageResult<RestaurantDto> queryPage(HttpServletRequest request, PageRequest pageRequest, RestaurantParams params);
 
     void saveRestaurant(Restaurant restaurant);
 

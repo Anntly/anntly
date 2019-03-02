@@ -7,6 +7,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -24,26 +25,29 @@ public class Desk {
     @KeySql(useGeneratedKeys = true)
     private Long id;
 
+    private String name;
+
     private Long restaurantId;
 
     private Long roomId;
 
     private Long menuId;
 
+    @Transient
+    private String menuName;
+
     private Integer capacity;
 
-    private String employeeCode;
-
-    private String employeeName;
-
     // 餐桌状态
-    private Integer status;
+    private Boolean status;
+
+    private String qrCode; //二维码图片
 
     @JsonProperty("create_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date createTime;
 
     @JsonProperty("update_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date updateTime;
 }
