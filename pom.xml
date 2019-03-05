@@ -12,6 +12,8 @@
         <module>anntly-area</module>
         <module>anntly-auth</module>
         <module>anntly-user</module>
+        <module>anntly-coupons</module>
+        <module>anntly-order</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

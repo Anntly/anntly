@@ -1,4 +1,4 @@
-package com.anntly.shop.config;
+package com.anntly.coupons.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class SwaggerConfig {
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.anntly.shop.web"))// 过滤的接口
+                .apis(RequestHandlerSelectors.basePackage("com.anntly.coupons.web"))// 过滤的接口
                 .paths(PathSelectors.any())
                 .build();
         return docket;
