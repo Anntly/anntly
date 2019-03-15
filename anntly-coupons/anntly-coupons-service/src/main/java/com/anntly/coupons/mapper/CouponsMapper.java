@@ -27,4 +27,7 @@ public interface CouponsMapper extends BaseMapper<Coupons> {
 
     @Update("update tb_coupons set status = not status where id = #{id}")
     void changeStatus(@Param("id") String id);
+
+    @Update("update tb_coupons set num = num -1 where num > 0 and id = #{id}")
+    int reduceNum(@Param("id") String id);
 }

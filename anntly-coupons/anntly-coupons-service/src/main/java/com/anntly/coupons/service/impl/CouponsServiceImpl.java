@@ -78,4 +78,16 @@ public class CouponsServiceImpl implements CouponsService {
     public void changeStatus(String id) {
         couponsMapper.changeStatus(id);
     }
+
+    @Override
+    @Transactional
+    public Coupons queryCouponsById(String id) {
+        // 先扣库存
+        int count = couponsMapper.reduceNum(id);
+        if(count <= 0){
+            return null;
+        }
+        // 返回优惠券信息
+        return couponsMapper.selectByPrimaryKey(id);
+    }
 }

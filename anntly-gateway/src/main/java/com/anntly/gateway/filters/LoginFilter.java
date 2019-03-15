@@ -28,7 +28,7 @@ public class LoginFilter extends ZuulFilter {
     private AuthService authService;
 
     private List<String> allowPaths = Arrays.asList("/api/user/register",
-            "/api/user/login","/api/user/info","/api/user/relogin");
+            "/api/user/login","/api/user/info","/api/user/relogin","/api/order/websocket");
 
     @Override
     public String filterType() {

@@ -60,7 +60,6 @@ public class MenuFoodCatController {
     @PostMapping
     @ApiOperation(value="增添餐厅菜单分类列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> saveRestaurant(MenuCategory menuCategory){
-        // TODO 需要与餐厅Id相绑定
         if(null == menuCategory){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
@@ -71,7 +70,6 @@ public class MenuFoodCatController {
     @PutMapping
     @ApiOperation(value="修改餐厅菜单分类列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> updateRestaurant(MenuCategory menuCategory){
-        // TODO 需要与餐厅Id相绑定
         if(null == menuCategory){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }

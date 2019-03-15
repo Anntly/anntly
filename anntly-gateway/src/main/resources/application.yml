@@ -31,6 +31,7 @@ zuul:
     user-service: /user/** # 用户微服务
     auth-service: /auth/** # 授权中心微服务
     coupons-service: /coupons/** # 优惠券服务
+    order-service: /order/** # 订单服务
     area-service:
       path: /area/**
       serviceId: area-service

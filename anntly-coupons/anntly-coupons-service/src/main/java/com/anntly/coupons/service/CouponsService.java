@@ -26,4 +26,6 @@ public interface CouponsService {
     void deleteCouponsList(List<String> ids);
 
     void changeStatus(String id);
+
+    Coupons queryCouponsById(String id);
 }

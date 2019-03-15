@@ -4,6 +4,7 @@ import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.mapper.DeskMapper;
 import com.anntly.shop.pojo.Desk;
 import com.anntly.shop.service.DeskService;
@@ -81,5 +82,14 @@ public class DeskServiceImpl implements DeskService {
             throw new AnnException(ExceptionEnum.Desks_NOT_FOUND);
         }
         return ids;
+    }
+
+    @Override
+    public List<Node> queryDeskNodesByRid(Long restaurantId) {
+        List<Node> nodes = deskMapper.queryDeskNodesByRid(restaurantId);
+        if(CollectionUtils.isEmpty(nodes)){
+            throw new AnnException(ExceptionEnum.Desks_NOT_FOUND);
+        }
+        return nodes;
     }
 }

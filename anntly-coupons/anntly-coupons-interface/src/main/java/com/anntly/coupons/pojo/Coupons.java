@@ -30,7 +30,7 @@ public class Coupons {
     // 发放的餐厅
     private Long restaurantId;
 
-    // 优惠券类型(false 减免 true 折扣)
+    // 优惠券类型(false 折扣 true 减免)
     private Boolean type;
 
     // 需要满足的金额

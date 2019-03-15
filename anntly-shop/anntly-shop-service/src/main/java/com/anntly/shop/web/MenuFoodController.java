@@ -5,6 +5,11 @@ import com.anntly.common.exception.AnnException;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.order.dto.Stock;
+import com.anntly.shop.dto.FoodDto;
+import com.anntly.shop.dto.Node;
+import com.anntly.shop.dto.OrderDto;
+import com.anntly.shop.dto.OrderFood;
 import com.anntly.shop.pojo.MenuFood;
 import com.anntly.shop.service.MenuFoodService;
 import com.anntly.shop.vo.MenuFoodParams;
@@ -14,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author soledad
@@ -103,5 +110,53 @@ public class MenuFoodController {
         }
         menuFoodService.deleteFoods(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @RequestMapping(value = "/stock/reduce",method = RequestMethod.GET)
+    @ApiOperation(value="根据id列表获取价格折扣库存", notes="无")
+    public ResponseEntity<Void> rudeceStock(@RequestParam("stocks") String stocks){
+        if(null == stocks){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        List<Stock> stockList = JsonUtils.parseList(stocks, Stock.class);
+        menuFoodService.rudeceStock(stockList);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/ids")
+    @ApiOperation(value="根据id列表获取价格折扣库存", notes="无")
+    public ResponseEntity<List<FoodDto>> queryFoodsByIds(@RequestParam("ids") List<Long> ids){
+        if(null == ids){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(menuFoodService.queryFoodsByIds(ids));
+    }
+
+    @GetMapping("/nodes")
+    @ApiOperation(value="根据分类mCid查询nodes", notes="无")
+    public ResponseEntity<List<FoodDto>> queryNodesByCid(@RequestParam("mCid") Long mCid){
+        if(null == mCid){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(menuFoodService.queryNodesByCid(mCid));
+    }
+
+    @GetMapping("/orders")
+    @ApiOperation(value="根据菜单Id查询下单信息", notes="无")
+    public ResponseEntity<List<OrderDto>> queryOrderDtosByMenuId(@RequestParam("menuId") Long menuId){
+        if(null == menuId){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(menuFoodService.queryOrderDtosByMenuId(menuId));
+    }
+
+    @GetMapping("/recommended")
+    @ApiOperation(value="获取推荐菜品", notes="无")
+    public ResponseEntity<List<OrderFood>> queryRecommendedFoods(@RequestParam("menuId") Long menuId){
+        if(null == menuId){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(menuFoodService.queryRecommendedFoods(menuId));
     }
 }

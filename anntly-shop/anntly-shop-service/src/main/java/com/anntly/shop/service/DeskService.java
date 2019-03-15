@@ -2,6 +2,7 @@ package com.anntly.shop.service;
 
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Desk;
 import com.anntly.shop.vo.DeskParams;
 
@@ -28,4 +29,6 @@ public interface DeskService {
     List<Long> queryDesksByRoomId(Long roomId);
 
     List<Long> queryDesksByRoomIds(List<Long> mids);
+
+    List<Node> queryDeskNodesByRid(Long restaurantId);
 }

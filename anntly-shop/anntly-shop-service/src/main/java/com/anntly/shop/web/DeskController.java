@@ -5,6 +5,7 @@ import com.anntly.common.exception.AnnException;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Desk;
 import com.anntly.shop.service.DeskService;
 import com.anntly.shop.vo.DeskParams;
@@ -50,7 +51,6 @@ public class DeskController {
     @PostMapping
     @ApiOperation(value="增添餐厅餐桌列表", notes="与房间Id绑定")
     public ResponseEntity<Void> saveRestaurant(Desk desk){
-        // TODO 需要与餐厅Id相绑定
         if(null == desk){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
@@ -88,4 +88,12 @@ public class DeskController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/nodes")
+    @ApiOperation(value="根据餐厅Id查询所有desk节点", notes="无")
+    public ResponseEntity<List<Node>> queryDeskNodesByRid(@RequestParam("restaurantId") Long restaurantId){
+        if(null == restaurantId){
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        return ResponseEntity.ok(deskService.queryDeskNodesByRid(restaurantId));
+    }
 }

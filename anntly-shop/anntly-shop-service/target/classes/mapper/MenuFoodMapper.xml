@@ -56,5 +56,44 @@
             #{id}
         </foreach>
     </select>
+
+    <update id="updateStock" parameterType="java.util.List">
+        <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
+            UPDATE tb_menu_food
+            <set>
+                stock=stock - #{bean.amount}
+            </set>
+            <where>
+                id = #{bean.id} and stock - #{bean.amount} > 0
+            </where>
+        </foreach>
+    </update>
+
+    <resultMap id="orderMap" type="com.anntly.shop.dto.OrderDto">
+        <id column="id" property="id"/>
+        <result column="name" property="name"></result>
+        <collection property="orderFoods" ofType="com.anntly.shop.dto.OrderFood">
+            <id column="oid" property="id"/>
+            <result column="m_cid" property="mCid"/>
+            <result column="show_name" property="showName"/>
+            <result column="price" property="price"/>
+            <result column="discount" property="discount"/>
+            <result column="pic" property="pic"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryOrderDtosByMenuId" resultMap="orderMap">
+      select
+        c.id,
+        c.name,
+        f.id as oid,
+        m_cid,
+        show_name,
+        price,
+        discount,
+        pic
+      from tb_menu_food_cat c
+      left join tb_menu_food f on c.id = f.m_cid and c.menu_id = #{menuId} and f.menu_id = #{menuId}
+    </select>
 </mapper>
 

@@ -1,6 +1,7 @@
 package com.anntly.shop.mapper;
 
 import com.anntly.common.mapper.BaseMapper;
+import com.anntly.shop.dto.Node;
 import com.anntly.shop.pojo.Desk;
 import com.anntly.shop.vo.DeskParams;
 import org.apache.ibatis.annotations.Param;
@@ -23,4 +24,7 @@ public interface DeskMapper extends BaseMapper<Desk> {
     List<Long> queryDesksByRoomId(@Param("roomId") Long roomId);
 
     List<Long> queryDeskIdsByMid(@Param("idList") List<Long> mids);
+
+    @Select("select id,name from tb_desk where restaurant_id = #{restaurantId}")
+    List<Node> queryDeskNodesByRid(@Param("restaurantId") Long restaurantId);
 }

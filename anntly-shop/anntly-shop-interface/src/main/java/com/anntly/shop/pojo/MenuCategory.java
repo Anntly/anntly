@@ -13,7 +13,7 @@ import java.util.Date;
  * @author soledad
  * @Title: MenuCategory
  * @ProjectName anntly
- * @Description: TODO
+ * @Description:
  * @date 2019/1/2420:18
  */
 @Data
