@@ -11,6 +11,9 @@ import com.anntly.coupons.pojo.Coupons;
 import com.anntly.order.client.CouponsClient;
 import com.anntly.order.client.MenuFoodClient;
 import com.anntly.order.config.WebSocket;
+import com.anntly.order.dto.PayTypeDto;
+import com.anntly.order.dto.PayTypeReport;
+import com.anntly.order.dto.ReportDto;
 import com.anntly.order.dto.Stock;
 import com.anntly.order.mapper.OrderMapper;
 import com.anntly.order.pojo.Order;
@@ -18,6 +21,7 @@ import com.anntly.order.pojo.OrderDetail;
 import com.anntly.order.service.OrderDetailService;
 import com.anntly.order.service.OrderService;
 import com.anntly.order.utils.AnOauth2Utils;
+import com.anntly.order.utils.DateThis;
 import com.anntly.order.vo.OrderParams;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -29,8 +33,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -165,6 +168,69 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public BigDecimal[] queryReportData(Long restaurantId) {
+        DateThis dateThis = new DateThis();
+        String before = dateThis.thisYear();
+        String after = dateThis.thisYearEnd();
+
+        List<ReportDto> nodes = orderMapper.queryReportData(restaurantId,before,after);
+        BigDecimal[] result = new BigDecimal[12];
+        for(int i = 0; i< nodes.size(); i++){
+            String node = nodes.get(i).getMonth().split("-")[1];
+            int month = Integer.valueOf(node) -1;
+
+
+                result[month] = nodes.get(i).getMoney();
+
+        }
+        return result;
+    }
+
+    @Override
+    public BigDecimal[] queryReportExpend(Long restaurantId) {
+
+        DateThis dateThis = new DateThis();
+        String before = dateThis.thisYear();
+        String after = dateThis.thisYearEnd();
+
+        List<ReportDto> nodes = orderMapper.queryReportExpend(restaurantId,before,after);
+        BigDecimal[] result = new BigDecimal[12];
+        for(int i = 0; i< nodes.size(); i++){
+            String node = nodes.get(i).getMonth().split("-")[1];
+            int month = Integer.valueOf(node) - 1;
+            result[month] = nodes.get(i).getMoney();
+        }
+        return result;
+    }
+
+    @Override
+    public List<PayTypeReport> queryReportPayType(Long restaurantId) {
+        List<PayTypeDto> payTypeDtos = orderMapper.queryReportPayType(restaurantId);
+        if(CollectionUtils.isEmpty(payTypeDtos)){
+            throw new AnnException(ExceptionEnum.FOODS_NOT_FOUND);
+        }
+        List<PayTypeReport> result = new ArrayList<>();
+        for (PayTypeDto dto : payTypeDtos) {
+            PayTypeReport report = new PayTypeReport();
+            if(dto.getPayType().equals(1)){
+                report.setName("支付宝");
+                report.setValue(dto.getNum());
+            }else if(dto.getPayType().equals(2)){
+                report.setName("微信");
+                report.setValue(dto.getNum());
+            }else if(dto.getPayType().equals(3)){
+                report.setName("现金");
+                report.setValue(dto.getNum());
+            }else if(dto.getPayType().equals(4)){
+                report.setName("其他");
+                report.setValue(dto.getNum());
+            }
+            result.add(report);
+        }
+        return result;
+    }
+
+    @Override
     @Transactional
     public void updateOrder(Order order) {
         order.setUpdateTime(new Date());
@@ -189,6 +255,4 @@ public class OrderServiceImpl implements OrderService {
         // TODO 同时删除订单详情信息
         orderMapper.updateBatch(ids);
     }
-
-
 }

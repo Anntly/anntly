@@ -2,6 +2,7 @@ package com.anntly.order.service;
 
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.order.dto.FoodResult;
 import com.anntly.order.pojo.OrderDetail;
 import com.anntly.order.vo.OrderDetailParams;
 
@@ -28,4 +29,6 @@ public interface OrderDetailService {
     void deleteOrderDetails(List<Long> ids);
 
     List<OrderDetail> queryOrderDetailsByOrderId(Long id);
+
+    FoodResult queryFoodReport(Long restaurantId);
 }

@@ -1,8 +1,12 @@
 package com.anntly.order.service.impl;
 
+import com.anntly.common.enums.ExceptionEnum;
+import com.anntly.common.exception.AnnException;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
 import com.anntly.order.client.MenuFoodClient;
+import com.anntly.order.dto.FoodReport;
+import com.anntly.order.dto.FoodResult;
 import com.anntly.order.mapper.OrderDetailMapper;
 import com.anntly.order.pojo.OrderDetail;
 import com.anntly.order.service.OrderDetailService;
@@ -13,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -100,6 +105,20 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public List<OrderDetail> queryOrderDetailsByOrderId(Long id) {
         return orderDetailMapper.queryOrderDetailsByOrderId(id);
+    }
+
+    @Override
+    public FoodResult queryFoodReport(Long restaurantId) {
+        List<FoodReport> foodReports = orderDetailMapper.queryFoodReport(restaurantId);
+        if(CollectionUtils.isEmpty(foodReports)){
+            throw new AnnException(ExceptionEnum.FOODS_NOT_FOUND);
+        }
+        List<String> name = foodReports.stream().map(FoodReport::getName).collect(Collectors.toList());
+        List<Integer> num = foodReports.stream().map(FoodReport::getNum).collect(Collectors.toList());
+        FoodResult foodResult = new FoodResult();
+        foodResult.setName(name);
+        foodResult.setNum(num);
+        return foodResult;
     }
 
 

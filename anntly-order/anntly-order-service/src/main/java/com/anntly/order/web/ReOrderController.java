@@ -6,6 +6,7 @@ import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
 import com.anntly.order.dto.OrderDto;
+import com.anntly.order.dto.PayTypeReport;
 import com.anntly.order.pojo.Order;
 import com.anntly.order.pojo.OrderDetail;
 import com.anntly.order.service.OrderService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author soledad
@@ -113,10 +115,25 @@ public class ReOrderController {
     @DeleteMapping("/ids")
     @ApiOperation(value="批量删除菜品分类", notes="无")
     public ResponseEntity<Void> deleteOrders(@RequestParam("ids") List<Long> ids){
-        if(null == ids){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         orderService.deleteOrders(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/report/order")
+    @ApiOperation(value="返回报表所需要data", notes="无")
+    public ResponseEntity<BigDecimal[]> queryReportOrder(@RequestParam("restaurantId") Long restaurantId){
+        return ResponseEntity.ok(orderService.queryReportData(restaurantId));
+    }
+
+    @GetMapping("/report/expend")
+    @ApiOperation(value="返回报表所需要data", notes="无")
+    public ResponseEntity<BigDecimal[]> queryReportExpend(@RequestParam("restaurantId") Long restaurantId){
+        return ResponseEntity.ok(orderService.queryReportExpend(restaurantId));
+    }
+
+    @GetMapping("/report/paytype")
+    @ApiOperation(value="返回报表所需要data", notes="无")
+    public ResponseEntity<List<PayTypeReport>> queryReportPayType(@RequestParam("restaurantId") Long restaurantId){
+        return ResponseEntity.ok(orderService.queryReportPayType(restaurantId));
     }
 }

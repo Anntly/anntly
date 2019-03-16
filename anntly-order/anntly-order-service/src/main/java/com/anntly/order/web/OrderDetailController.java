@@ -5,6 +5,7 @@ import com.anntly.common.exception.AnnException;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.order.dto.FoodResult;
 import com.anntly.order.pojo.OrderDetail;
 import com.anntly.order.service.OrderDetailService;
 import com.anntly.order.vo.OrderDetailParams;
@@ -80,9 +81,6 @@ public class OrderDetailController {
     @DeleteMapping("/ids")
     @ApiOperation(value="批量删除", notes="无")
     public ResponseEntity<Void> deleteOrderDetails(@RequestParam("ids") List<Long> ids){
-        if(null == ids){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         orderDetailService.deleteOrderDetails(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -94,5 +92,11 @@ public class OrderDetailController {
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
         return ResponseEntity.ok(orderDetailService.queryOrderDetailsByOrderId(id));
+    }
+
+    @GetMapping("/report/food")
+    @ApiOperation(value="返回报表需要的数据", notes="与餐厅Id绑定")
+    public ResponseEntity<FoodResult> queryFoodReport(@RequestParam("restaurantId") Long restaurantId){
+        return ResponseEntity.ok(orderDetailService.queryFoodReport(restaurantId));
     }
 }

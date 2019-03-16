@@ -2,12 +2,14 @@ package com.anntly.order.service;
 
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.order.dto.PayTypeReport;
 import com.anntly.order.pojo.Order;
 import com.anntly.order.vo.OrderParams;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author soledad
@@ -30,4 +32,10 @@ public interface OrderService {
     BigDecimal settlement(Long id);
 
     void hasPay(Long id);
+
+    BigDecimal[] queryReportData(Long restaurantId);
+
+    BigDecimal[] queryReportExpend(Long restaurantId);
+
+    List<PayTypeReport> queryReportPayType(Long restaurantId);
 }
