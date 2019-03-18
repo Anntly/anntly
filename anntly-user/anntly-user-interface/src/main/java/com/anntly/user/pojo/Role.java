@@ -8,7 +8,9 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author soledad
@@ -19,7 +21,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "tb_role")
-public class Role implements GrantedAuthority {
+public class Role {
 
     @Id
     @KeySql(useGeneratedKeys = true)
@@ -29,6 +31,9 @@ public class Role implements GrantedAuthority {
 
     private String description;
 
+    @Transient
+    private List<Permission> authorities;
+
     @JsonProperty("create_time")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -37,8 +42,5 @@ public class Role implements GrantedAuthority {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    @Override
-    public String getAuthority() {
-        return name;
-    }
+
 }

@@ -13,16 +13,20 @@
         <result column="icon" property="icon"></result>
         <result column="username" property="username"></result>
         <result column="password" property="password"></result>
-        <collection property="authorities" ofType="com.anntly.user.pojo.Role">
+        <collection property="roles" ofType="com.anntly.user.pojo.Role">
             <id column="rid" property="id"/>
             <result column="rname" property="name"/>
             <result column="description" property="description"/>
+            <collection property="authorities" ofType="com.anntly.user.pojo.Permission">
+                <id column="pid" property="id"/>
+                <result column="pname" property="name"/>
+                <result column="pdescription" property="description"/>
+            </collection>
         </collection>
     </resultMap>
 
     <select id="findUserByUsername" resultMap="userResultMap">
-           select
-                  u.id,
+           SELECT u.id,
                   u.phone,
                   u.email,
                   u.icon,
@@ -30,9 +34,12 @@
                   u.password,
                   r.id as rid,
                   r.name as rname,
-                  r.description
-           from tb_user u,tb_role r ,tb_user_role ur
-           where u.id = ur.user_id and r.id = ur.role_id and u.username = #{username}
+                  r.description,
+	              p.id as pid,
+	              p.name as pname,
+	              p.description as pdescription
+          FROM tb_user u,tb_user_role ur,tb_role r,tb_role_permission rp,tb_permission p
+          where u.id = ur.user_id and ur.role_id = r.id and r.id = rp.role_id and p.id = rp.permission_id and u.username = #{username}
     </select>
 </mapper>
 

@@ -2,26 +2,32 @@ package com.anntly.user.web;
 
 import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
+import com.anntly.common.pojo.UserInfo;
 import com.anntly.common.utils.CookieUtil;
+import com.anntly.user.dto.UserInfoDto;
 import com.anntly.user.dto.UserLoginDto;
 import com.anntly.user.pojo.AuthToken;
 import com.anntly.user.pojo.LoginRequest;
 import com.anntly.user.pojo.User;
 import com.anntly.user.pojo.UserToken;
 import com.anntly.user.service.UserService;
+import com.anntly.user.utils.AnOauth2Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,7 +38,6 @@ import java.util.UUID;
  * @date 2019/2/2111:23
  */
 @RestController
-//@RequestMapping("/user")
 public class UserController {
 
     @Value("${auth.clientId}")
@@ -121,5 +126,33 @@ public class UserController {
         return ResponseEntity.ok("i'm foo, " + UUID.randomUUID().toString());
     }
 
+    @PutMapping("/changepass")
+    public ResponseEntity<Void> changePassword(@RequestBody Map<String,String> pass, HttpServletRequest request){
+        if (CollectionUtils.isEmpty(pass) || pass.size() < 2) {
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        userService.changePassword(pass,request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
+    @GetMapping("/checkuser")
+    public ResponseEntity<Boolean> checkUser(@RequestParam(value = "username",required = false) String username,
+                                             @RequestParam(value = "phone",required = false) String phone,
+                                             @RequestParam(value = "email",required = false) String email){
+        return ResponseEntity.ok(userService.checkUser(username,phone,email));
+    }
+
+    @GetMapping("/userinfo")
+    public ResponseEntity<UserInfoDto> getUserInfo(HttpServletRequest request){
+        // 获取登录用户
+        AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
+        UserInfo info = anOauth2Utils.getUserJwtFromHeader(request);
+        return ResponseEntity.ok(userService.getUserInfo(info.getUsername()));
+    }
+
+    @PutMapping("/changeinfo")
+    public ResponseEntity<Void> updateUserInfo(@RequestBody UserInfoDto userInfoDto){
+        userService.updateUserInfo(userInfoDto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

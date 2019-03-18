@@ -1,8 +1,12 @@
 package com.anntly.user.service;
 
+import com.anntly.user.dto.UserInfoDto;
 import com.anntly.user.pojo.AuthToken;
 import com.anntly.user.pojo.User;
 import com.anntly.user.pojo.UserToken;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author soledad
@@ -23,4 +27,12 @@ public interface UserService {
     boolean removeToken(String accessToken);
 
     AuthToken reLogin(String refresh_token, String clientId, String clientSecret);
+
+    void changePassword(Map<String, String> pass, HttpServletRequest request);
+
+    Boolean checkUser(String username, String phone, String email);
+
+    UserInfoDto getUserInfo(String username);
+
+    void updateUserInfo(UserInfoDto userInfoDto);
 }

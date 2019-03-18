@@ -5,10 +5,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import tk.mybatis.mapper.annotation.KeySql;
 
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +28,7 @@ public class User implements UserDetails, Serializable {
 
     @Id
     @KeySql(useGeneratedKeys = true)
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     private String username;
@@ -38,9 +41,9 @@ public class User implements UserDetails, Serializable {
 
     private String icon;
 
-    private Integer userStatus;
+    private Boolean member;
 
-    private Boolean dataStatus;
+    private Boolean userStatus;
 
     private Date registerTime;
 
@@ -48,13 +51,18 @@ public class User implements UserDetails, Serializable {
 
     private Date lastLoginTime;
 
-    @Transient
-    private List<Role> authorities;
+    private Boolean dataStatus;
 
-    public List<Role> getRoles(){return this.authorities;}
+    @Transient
+    private List<Role> roles;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<Permission> authorities = new ArrayList<>();
+        for (Role role : this.roles) {
+            authorities.addAll(role.getAuthorities());
+        }
         return authorities;
     }
 

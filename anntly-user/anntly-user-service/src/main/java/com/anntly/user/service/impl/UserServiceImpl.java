@@ -2,13 +2,17 @@ package com.anntly.user.service.impl;
 
 import com.anntly.common.enums.ExceptionEnum;
 import com.anntly.common.exception.AnnException;
+import com.anntly.common.pojo.UserInfo;
 import com.anntly.common.utils.CookieUtil;
 import com.anntly.common.utils.JsonUtils;
 import com.anntly.user.client.AuthServiceClient;
+import com.anntly.user.dto.UserDto;
+import com.anntly.user.dto.UserInfoDto;
 import com.anntly.user.dto.UserLoginDto;
 import com.anntly.user.mapper.UserMapper;
 import com.anntly.user.pojo.*;
 import com.anntly.user.service.UserService;
+import com.anntly.user.utils.AnOauth2Utils;
 import com.anntly.user.utils.BPwdEncoderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,10 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 
-import java.util.Date;
-import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -47,6 +52,7 @@ public class UserServiceImpl implements UserService {
     private long tokenValiditySeconds; // 过期时间
 
     @Override
+    @Transactional
     public void saveUser(String username,String password){
         User user = new User();
         user.setUsername(username);
@@ -55,7 +61,7 @@ public class UserServiceImpl implements UserService {
         user.setUpdateTime(user.getRegisterTime());
         user.setLastLoginTime(user.getRegisterTime());
         user.setDataStatus(true);
-        user.setUserStatus(1); //暂时先设置为1
+        user.setUserStatus(true); //暂时先设置为1
         userMapper.insert(user);
     }
 
@@ -100,7 +106,12 @@ public class UserServiceImpl implements UserService {
         userLoginDto.setToken(authToken.getAccessToken());
         userLoginDto.setAvatar(user.getIcon());
         userLoginDto.setReToken(authToken.getRefresh_token());
-        userLoginDto.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        List<Permission> permissions = new ArrayList<>();
+        List<Role> roles = user.getRoles();
+        for (Role role : roles) {
+            permissions.addAll(role.getAuthorities());
+        }
+        userLoginDto.setRoles(permissions.stream().map(Permission::getName).collect(Collectors.toList()));
 
         userToken.setUserLoginDto(userLoginDto);
         return userToken;
@@ -126,6 +137,96 @@ public class UserServiceImpl implements UserService {
             throw new AnnException(ExceptionEnum.LOGIN_FAILED);
         }
         return authToken;
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Map<String, String> pass, HttpServletRequest request) {
+        String oldPassword = pass.get("oldPassword");
+        String newPassword = pass.get("newPassword");
+        // 获取登录用户
+        AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
+        UserInfo info = anOauth2Utils.getUserJwtFromHeader(request);
+        // 查询用户密码
+        UserDto dto = userMapper.getUserByUsername(info.getUsername());
+        if(!BPwdEncoderUtil.matches(oldPassword,dto.getPassword())){
+            throw new AnnException(ExceptionEnum.PASSWORD_ERROR);
+        }
+        User user = new User();
+        user.setId(dto.getId());
+        user.setPassword(BPwdEncoderUtil.BCryptPassword(newPassword));
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Boolean checkUser(String username, String phone, String email) {
+
+        User user = new User();
+        if(StringUtils.isNoneBlank(username)){
+            user.setUsername(username);
+        }else if(StringUtils.isNoneBlank(phone)){
+            user.setPhone(phone);
+        }else if(StringUtils.isNoneBlank(email)){
+            user.setEmail(email);
+        }else {
+            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
+        }
+        int count = userMapper.selectCount(user);
+        if(count > 0){
+            // true 代表数据库有user
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public UserInfoDto getUserInfo(String username) {
+        // 查询User信息
+        UserDto userDto = userMapper.getUserByUsername(username);
+        // 查询UserInfo信息
+        com.anntly.user.pojo.UserInfo info = userMapper.getUserInfoByUserId(userDto.getId());
+        UserInfoDto infoDto = new UserInfoDto();
+        infoDto.setUsername(userDto.getUsername());
+        infoDto.setEmail(userDto.getEmail());
+        infoDto.setIcon(userDto.getIcon());
+        infoDto.setPhone(userDto.getPhone());
+        infoDto.setNickName(info.getNickName());
+        infoDto.setUnderwrite(info.getUnderwrite());
+        infoDto.setAddress(info.getAddress());
+        infoDto.setAge(info.getAge());
+        infoDto.setBirthday(info.getBirthday());
+        infoDto.setSex(info.getSex());
+        infoDto.setId(info.getUserId());
+        return infoDto;
+    }
+
+    @Override
+    @Transactional
+    public void updateUserInfo(UserInfoDto userInfoDto) {
+        // 先判断用户名密码是否存在
+        Boolean isExist = checkUser(userInfoDto.getUsername(),userInfoDto.getEmail(),userInfoDto.getPhone());
+        if(isExist){
+            throw new AnnException(ExceptionEnum.User_EXIST);
+        }
+        // 更新用户表
+        User user = new User();
+        user.setUsername(userInfoDto.getUsername());
+        user.setEmail(userInfoDto.getEmail());
+        user.setPhone(userInfoDto.getPhone());
+        user.setIcon(userInfoDto.getIcon());
+        user.setId(userInfoDto.getId());
+        userMapper.updateByPrimaryKeySelective(user);
+        // 更新用户信息表
+        com.anntly.user.pojo.UserInfo info = new com.anntly.user.pojo.UserInfo();
+        info.setAddress(userInfoDto.getAddress());
+        info.setUserId(userInfoDto.getId());
+        info.setAge(userInfoDto.getAge());
+        info.setBirthday(userInfoDto.getBirthday());
+        info.setNickName(userInfoDto.getNickName());
+        info.setUnderwrite(userInfoDto.getUnderwrite());
+        info.setSex(userInfoDto.getSex());
+        userMapper.updateUserInfo(info);
     }
 
     @Override

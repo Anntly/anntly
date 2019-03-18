@@ -11,28 +11,110 @@
         <result column="phone" property="phone"></result>
         <result column="email" property="email"></result>
         <result column="icon" property="icon"></result>
+        <result column="member" property="member"></result>
         <result column="username" property="username"></result>
         <result column="password" property="password"></result>
-        <collection property="authorities" ofType="com.anntly.user.pojo.Role">
+        <collection property="roles" ofType="com.anntly.user.pojo.Role">
             <id column="rid" property="id"/>
             <result column="rname" property="name"/>
             <result column="description" property="description"/>
+            <collection property="authorities" ofType="com.anntly.user.pojo.Permission">
+                <id column="pid" property="id"/>
+                <result column="pname" property="name"/>
+                <result column="pdescription" property="description"/>
+            </collection>
         </collection>
     </resultMap>
 
     <select id="findUserByUsername" resultMap="userResultMap">
-           select
-                  u.id,
+           SELECT u.id,
                   u.phone,
                   u.email,
                   u.icon,
+                  u.member,
                   u.username,
                   u.password,
                   r.id as rid,
                   r.name as rname,
-                  r.description
-           from tb_user u,tb_role r ,tb_user_role ur
-           where u.id = ur.user_id and r.id = ur.role_id and u.username = #{username}
+                  r.description,
+	              p.id as pid,
+	              p.name as pname,
+	              p.description as pdescription
+          FROM tb_user u,tb_user_role ur,tb_role r,tb_role_permission rp,tb_permission p
+          where u.id = ur.user_id and ur.role_id = r.id and r.id = rp.role_id and p.id = rp.permission_id and u.username = #{username}
     </select>
+
+    <update id="updateUserInfo" parameterType="com.anntly.user.pojo.UserInfo">
+        update tb_user_info
+        <set>
+            <if test="info.sex != null and info.sex != ''">sex=#{info.sex},</if>
+            <if test="info.birthday != null">birthday=#{info.birthday},</if>
+            <if test="info.nickName != null and info.nickName != ''">nick_name=#{info.nickName},</if>
+            <if test="info.age != null and info.age != ''">age=#{info.age},</if>
+            <if test="info.underwrite != null and info.underwrite != ''">underwrite=#{info.underwrite},</if>
+            <if test="info.address != null and info.address != ''">address=#{info.address}</if>
+        </set>
+        where user_id=#{info.userId}
+    </update>
+
+    <sql id="where">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                and u.id =#{params.id}
+            </if>
+            <if test="params.username != null and params.username != ''">
+                and u.username like concat(concat('%',#{params.username}),'%')
+            </if>
+            <if test="params.phone != null and params.phone != ''">
+                and u.phone =#{params.phone}
+            </if>
+            <if test="params.email != null and params.email != ''">
+                and u.email =#{params.email}
+            </if>
+            <if test="params.member != null and params.member != ''">
+                and u.member =#{params.member}
+            </if>
+            <if test="params.userStatus != null and params.userStatus != ''">
+                and u.member =#{params.userStatus}
+            </if>
+            and u.id = ur.user_id
+            and r.id = ur.role_id
+            and u.data_status = 1
+            <if test="params.roleId != null and params.roleId != ''">
+                and r.id like concat(concat('%',#{params.roleId}),'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryPage" resultType="com.anntly.user.dto.UserTable">
+        select distinct u.id,
+        u.username,
+        u.user_status,
+        u.update_time,
+        u.register_time,
+        u.phone,
+        u.email,
+        u.member,
+        u.last_login_time,
+        u.icon
+        from tb_user u, tb_role r, tb_user_role ur
+        <include refid="where" />
+        <if test="params.sname != null and params.sname != '' and params.sord != null and params.sord != ''">
+            order by ${params.sname} ${params.sord}
+        </if>
+    </select>
+
+    <insert id="insertUserRoleBatch" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into tb_user_role
+        (user_id,role_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.userId,jdbcType=BIGINT },
+            #{item.roleId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
 </mapper>
 
