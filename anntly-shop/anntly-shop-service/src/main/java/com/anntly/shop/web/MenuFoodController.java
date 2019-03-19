@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ public class MenuFoodController {
     private MenuFoodService menuFoodService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_MENU')")
     @ApiOperation(value="获取餐厅菜单列表", notes="与餐厅Id绑定")
     public ResponseEntity<PageResult<MenuFood>> queryMenuPage(PageRequest pageRequest){
         MenuFoodParams params = null;
@@ -55,6 +57,7 @@ public class MenuFoodController {
     }
 
     @PutMapping("/saleable/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="根据ID修改菜品上下架", notes="无")
     public ResponseEntity<Void> changeSalable(@PathVariable("id") Long id){
         // TODO 使用redis或者其他方式或者前端进行限流
@@ -63,6 +66,7 @@ public class MenuFoodController {
     }
 
     @PutMapping("/recommend/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="根据ID修改菜品是否为推荐菜品", notes="无")
     public ResponseEntity<Void> changeRecommend(@PathVariable("id") Long id){
         // TODO 使用redis或者其他方式或者前端进行限流
@@ -71,6 +75,7 @@ public class MenuFoodController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_MENU')")
     @ApiOperation(value="增添餐厅菜单列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> saveRestaurant(MenuFood menuFood){
         // TODO 需要与餐厅Id相绑定
@@ -82,6 +87,7 @@ public class MenuFoodController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="修改餐厅菜单列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> updateRestaurant(MenuFood menuFood){
         // TODO 需要与餐厅Id相绑定
@@ -93,6 +99,7 @@ public class MenuFoodController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="删除单个菜品", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteFood(@PathVariable("id") Long id){
         if(null == id){
@@ -103,6 +110,7 @@ public class MenuFoodController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="批量删除菜品", notes="无")
     public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
         if(null == ids){

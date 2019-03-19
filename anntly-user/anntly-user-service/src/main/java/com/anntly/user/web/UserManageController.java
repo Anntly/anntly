@@ -11,6 +11,7 @@ import com.anntly.user.vo.UserParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,6 +29,7 @@ public class UserManageController {
     private UserTableService userTableService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_USER')")
     public ResponseEntity<PageResult<UserTable>> queryUserPage(PageRequest pageRequest){
         UserParam params = null;
         if(null == pageRequest){
@@ -44,6 +46,7 @@ public class UserManageController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_USER')")
     public ResponseEntity<Void> saveUser(UserTable userTable){
         if(null == userTable){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -53,6 +56,7 @@ public class UserManageController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     public ResponseEntity<Void> updateRole(UserTable userTable){
         if(null == userTable){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -62,6 +66,7 @@ public class UserManageController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('REMOVE_USER')")
     public ResponseEntity<Void> deleteRole(@PathVariable("id") Long id){
         userTableService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

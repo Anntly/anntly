@@ -25,9 +25,9 @@ public class UserApplication {
         SpringApplication.run(UserApplication.class,args);
     }
 
-    // 添加feign远程拦截器 添加header信息
-//    @Bean
-//    public FeignClientInterceptor feignClientInterceptor(){
-//        return new FeignClientInterceptor();
-//    }
+     //添加feign远程拦截器 添加header信息
+    @Bean
+    public FeignClientInterceptor feignClientInterceptor(){
+        return new FeignClientInterceptor();
+    }
 }

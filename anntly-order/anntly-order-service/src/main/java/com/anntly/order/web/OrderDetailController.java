@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class OrderDetailController {
     private OrderDetailService orderDetailService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_ORDER')")
     @ApiOperation(value="获取餐厅订单详情列表", notes="与餐厅Id绑定")
     public ResponseEntity<PageResult<OrderDetail>> queryRestaurantPage(PageRequest pageRequest){
         OrderDetailParams params = null;
@@ -49,6 +51,7 @@ public class OrderDetailController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_ORDER')")
     @ApiOperation(value="增添订单详情", notes="与订单Id绑定")
     public ResponseEntity<Void> saveOrderDetail(OrderDetail orderDetail){
         if(null == orderDetail){
@@ -59,6 +62,7 @@ public class OrderDetailController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_ORDER')")
     @ApiOperation(value="修改订单详情", notes="与订单Id绑定")
     public ResponseEntity<Void> updateOrderDetail(OrderDetail orderDetail){
         if(null == orderDetail){
@@ -69,6 +73,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_ORDER')")
     @ApiOperation(value="删除订单详情", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteOrderDetail(@PathVariable("id") Long id){
         if(null == id){
@@ -79,6 +84,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('DELETE_ORDER')")
     @ApiOperation(value="批量删除", notes="无")
     public ResponseEntity<Void> deleteOrderDetails(@RequestParam("ids") List<Long> ids){
         orderDetailService.deleteOrderDetails(ids);
@@ -95,6 +101,7 @@ public class OrderDetailController {
     }
 
     @GetMapping("/report/food")
+    @PreAuthorize("hasAuthority('REPORT')")
     @ApiOperation(value="返回报表需要的数据", notes="与餐厅Id绑定")
     public ResponseEntity<FoodResult> queryFoodReport(@RequestParam("restaurantId") Long restaurantId){
         return ResponseEntity.ok(orderDetailService.queryFoodReport(restaurantId));

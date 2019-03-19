@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ public class ShopController {
     private RestaurantService restaurantService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_SHOP')")
     @ApiOperation(value="获取餐厅列表", notes="命名需要与数据库对应")
     public ResponseEntity<PageResult<RestaurantDto>> queryRestaurantPage(HttpServletRequest request,
                                                                          PageRequest pageRequest){
@@ -67,6 +69,7 @@ public class ShopController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_SHOP')")
     @ApiOperation(value="上传菜品", notes="命名需要与数据库对应")
     public ResponseEntity<Void> saveRestaurant(Restaurant restaurant,HttpServletRequest request){
         // TODO 需要与userId相绑定
@@ -82,6 +85,7 @@ public class ShopController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_SHOP')")
     @ApiOperation(value="更新菜品", notes="命名需要与数据库对应")
     public ResponseEntity<Void> updateRestaurant(Restaurant restaurant){
         if(null == restaurant){
@@ -92,6 +96,7 @@ public class ShopController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('REMOVE_SHOP')")
     @ApiOperation(value="删除单个餐厅", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable("id") Long id){
         // TODO 待定不删除餐厅下的所有房间，餐桌
@@ -103,6 +108,7 @@ public class ShopController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('REMOVE_SHOP')")
     @ApiOperation(value="批量删除餐厅", notes="无")
     public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
         // TODO 待定不删除餐厅下的所有房间，餐桌

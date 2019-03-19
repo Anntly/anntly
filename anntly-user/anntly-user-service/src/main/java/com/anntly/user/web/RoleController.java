@@ -13,6 +13,7 @@ import com.anntly.user.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_ROLE')")
     public ResponseEntity<PageResult<Role>> queryMenuPage(PageRequest pageRequest){
         RoleParam params = null;
         if(null == pageRequest){
@@ -49,6 +51,7 @@ public class RoleController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_ROLE')")
     public ResponseEntity<Void> saveRole(RoleVo roleVo){
         if(null == roleVo){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -58,6 +61,7 @@ public class RoleController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_ROLE')")
     public ResponseEntity<Void> updateRole(RoleVo roleVo){
         if(null == roleVo){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -67,6 +71,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('REMOVE_ROLE')")
     public ResponseEntity<Void> deleteRole(@PathVariable("id") Long id){
         roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

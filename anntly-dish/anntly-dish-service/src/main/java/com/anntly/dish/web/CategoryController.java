@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('QUERY_CAT')")
     @ApiOperation(value="获取菜品分类列表", notes="命名需要与数据库对应")
     public ResponseEntity<List<Category>> queryCategoryPage(){
         return ResponseEntity.ok(categoryService.queryCategoryPage());
@@ -45,6 +47,7 @@ public class CategoryController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ADD_CAT')")
     @ApiOperation(value="添加菜品分类", notes="category的pid为添加的节点的父节点ID")
     public ResponseEntity<Void> saveCategory(@Validated Category category){
         if(null == category){
@@ -55,6 +58,7 @@ public class CategoryController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_CAT')")
     @ApiOperation(value="修改菜品分类信息", notes="命名需要与数据库对应")
     public ResponseEntity<Void> updateCategory(Category category){
         System.err.println(category.toString());
@@ -66,7 +70,8 @@ public class CategoryController {
     }
 
     @DeleteMapping
-    @ApiOperation(value="修改菜品分类信息", notes="需要传递删除节点的ID")
+    @PreAuthorize("hasAuthority('DELETE_CAT')")
+    @ApiOperation(value="删除菜品分类信息", notes="需要传递删除节点的ID")
     public ResponseEntity<Void> deleteCategory(@RequestParam("id") Long id){
         categoryService.deleteCategory(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

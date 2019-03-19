@@ -120,13 +120,14 @@ public class UserController {
         CookieUtil.addCookie(response,cookieDomain,"/","reid",refreshToken,0,false);
     }
 
-    @GetMapping(value = "/foo")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<String> getFoo() {
-        return ResponseEntity.ok("i'm foo, " + UUID.randomUUID().toString());
-    }
+//    @GetMapping(value = "/foo")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    public ResponseEntity<String> getFoo() {
+//        return ResponseEntity.ok("i'm foo, " + UUID.randomUUID().toString());
+//    }
 
     @PutMapping("/changepass")
+    @PreAuthorize("hasAuthority('CHANGE_PASS')")
     public ResponseEntity<Void> changePassword(@RequestBody Map<String,String> pass, HttpServletRequest request){
         if (CollectionUtils.isEmpty(pass) || pass.size() < 2) {
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -151,6 +152,7 @@ public class UserController {
     }
 
     @PutMapping("/changeinfo")
+    @PreAuthorize("hasAuthority('CHANGE_INFO')")
     public ResponseEntity<Void> updateUserInfo(@RequestBody UserInfoDto userInfoDto){
         userService.updateUserInfo(userInfoDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

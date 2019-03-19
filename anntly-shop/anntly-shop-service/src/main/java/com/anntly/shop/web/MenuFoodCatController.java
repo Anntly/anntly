@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class MenuFoodCatController {
     private MenuCatService menuCatService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_MENU')")
     @ApiOperation(value="获取餐厅菜单分类列表", notes="与菜单Id绑定")
     public ResponseEntity<PageResult<MenuCategory>> queryMenuPage(PageRequest pageRequest){
         MenuCatParams params = null;
@@ -58,6 +60,7 @@ public class MenuFoodCatController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_MENU')")
     @ApiOperation(value="增添餐厅菜单分类列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> saveRestaurant(MenuCategory menuCategory){
         if(null == menuCategory){
@@ -68,6 +71,7 @@ public class MenuFoodCatController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="修改餐厅菜单分类列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> updateRestaurant(MenuCategory menuCategory){
         if(null == menuCategory){
@@ -79,6 +83,7 @@ public class MenuFoodCatController {
 
     // 删除分类会联动删除该分类下的所有菜品
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_MENU')")
     @ApiOperation(value="删除单个菜品分类", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteMenuCat(@PathVariable("id") Long id){
         if(null == id){
@@ -89,6 +94,7 @@ public class MenuFoodCatController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('DELETE_MENU')")
     @ApiOperation(value="批量删除菜品分类", notes="无")
     public ResponseEntity<Void> deleteMenuCat(@RequestParam("ids") List<Long> ids){
         if(null == ids){

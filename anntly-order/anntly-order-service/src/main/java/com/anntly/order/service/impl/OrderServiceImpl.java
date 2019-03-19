@@ -61,8 +61,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CouponsClient couponsClient;
 
-    @Autowired
-    private WebSocket webSocket;
 
     @Override
     public PageResult<Order> queryPage(PageRequest pageRequest, OrderParams params) {
@@ -103,16 +101,15 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdateTime(order.getCreateTime());
         order.setId(orderId);
         order.setDataStatus(true); // 设置数据状态为true
-        order.setStatus(2); // 设置订单状态为 已接单
+        order.setStatus(1); // 设置订单状态为 已接单
         order.setType(true); // 设置类型为店内点餐
+        order.setPayStatus(false);
         // 插入订单详情List
         order.getOrderDetails().stream().forEach(x -> {
             x.setOrderId(orderId);
             x.setDataStatus(true);
         });
         orderDetailService.saveOrderDetailList(order.getOrderDetails());
-         // 将未接单状态的 order信息发给商家
-        webSocket.sendOneMessage(order.getRestaurantId(), "你有一条新的订单");
         orderMapper.insert(order);
     }
 
@@ -228,6 +225,15 @@ public class OrderServiceImpl implements OrderService {
             result.add(report);
         }
         return result;
+    }
+
+    @Override
+    @Transactional
+    public void tackOrder(Long id) {
+        Order order = new Order();
+        order.setId(id);
+        order.setStatus(2);
+        orderMapper.updateByPrimaryKeySelective(order);
     }
 
     @Override

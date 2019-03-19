@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class RoomController {
     private RoomService roomService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_SHOP')")
     @ApiOperation(value="获取房间列表", notes="需要传入餐厅Id")
     public ResponseEntity<PageResult<Room>> queryRestaurantPage(PageRequest pageRequest){
         // 需要与 餐厅绑定
@@ -52,6 +54,7 @@ public class RoomController {
 
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_SHOP')")
     @ApiOperation(value="增添餐厅房间列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> saveRestaurant(Room room){
         if(null == room){
@@ -62,6 +65,7 @@ public class RoomController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_SHOP')")
     @ApiOperation(value="修改餐厅菜单列表", notes="与餐厅Id绑定")
     public ResponseEntity<Void> updateRestaurant(Room room){
         if(null == room){
@@ -72,6 +76,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('REMOVE_SHOP')")
     @ApiOperation(value="删除单个房间", notes="房间中的餐桌一起删除")
     public ResponseEntity<Void> deleteMenuCat(@PathVariable("id") Long id){
         if(null == id){
@@ -82,6 +87,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('REMOVE_SHOP')")
     @ApiOperation(value="批量删除菜品分类", notes="无")
     public ResponseEntity<Void> deleteMenuCat(@RequestParam("ids") List<Long> ids){
         if(null == ids){

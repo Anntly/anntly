@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class FoodController {
     private FoodService foodService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_FOOD')")
     @ApiOperation(value="获取菜品列表", notes="命名需要与数据库对应")
     public ResponseEntity<PageResult<Food>> queryFoodPage(
             @RequestParam(value = "key",required = false) String key,
@@ -37,6 +39,7 @@ public class FoodController {
     }
 
     @PutMapping("/saleable/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_FOOD')")
     @ApiOperation(value="根据ID修改菜品上下架", notes="无")
     public ResponseEntity<Void> changeSalable(@PathVariable("id") Long id){
         // TODO 使用redis或者其他方式或者前端进行限流
@@ -45,6 +48,7 @@ public class FoodController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_FOOD')")
     @ApiOperation(value="新增菜品", notes="图片需要调用图片上传服务")
     public ResponseEntity<Void> createFood(@Validated Food food){
         if(null == food){
@@ -55,6 +59,7 @@ public class FoodController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_FOOD')")
     @ApiOperation(value="修改菜品", notes="图片需要调用图片上传服务")
     public ResponseEntity<Void> updateFood(@Validated Food food){
         if(null == food){
@@ -65,6 +70,7 @@ public class FoodController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_FOOD')")
     @ApiOperation(value="删除菜品", notes="图片需要调用图片上传服务")
     public ResponseEntity<Void> deleteFood(@PathVariable("id") Long id){
         if(null == id){
@@ -75,6 +81,7 @@ public class FoodController {
     }
 
     @DeleteMapping("/ids")
+    @PreAuthorize("hasAuthority('DELETE_FOOD')")
     @ApiOperation(value="批量删除菜品", notes="图片需要调用图片上传服务")
     public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
         if(null == ids){

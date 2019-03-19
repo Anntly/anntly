@@ -15,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('QUERY_EMPLOYEE')")
     @ApiOperation(value="获取餐厅列表", notes="命名需要与数据库对应")
     public ResponseEntity<PageResult<Employee>> queryRestaurantPage(PageRequest pageRequest){
         // 需要与 餐厅绑定
@@ -54,6 +56,7 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_EMPLOYEE')")
     @ApiOperation(value="增添员工", notes="与餐厅Id绑定")
     public ResponseEntity<Void> saveRestaurant(Employee employee){
         if(null == employee){
@@ -64,6 +67,7 @@ public class EmployeeController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('UPDATE_EMPLOYEE')")
     @ApiOperation(value="修改员工信息", notes="与餐厅Id绑定")
     public ResponseEntity<Void> updateRestaurant(Employee employee){
         if(null == employee){

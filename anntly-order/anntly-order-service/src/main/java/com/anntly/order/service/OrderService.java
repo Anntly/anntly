@@ -38,4 +38,6 @@ public interface OrderService {
     BigDecimal[] queryReportExpend(Long restaurantId);
 
     List<PayTypeReport> queryReportPayType(Long restaurantId);
+
+    void tackOrder(Long id);
 }

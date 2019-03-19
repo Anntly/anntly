@@ -94,6 +94,7 @@ public class UserTableServiceImpl implements UserTableService {
     public void updateUser(UserTable userTable) {
         User user = new User();
         BeanUtils.copyProperties(userTable,user);
+        user.setPassword(null);
         user.setUpdateTime(new Date());
         // 判断用户名是否存在
         if(userService.checkUser(user.getUsername(),user.getPhone(),user.getEmail())){
