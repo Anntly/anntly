@@ -3,6 +3,7 @@ package com.anntly.order.service;
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
 import com.anntly.order.dto.PayTypeReport;
+import com.anntly.order.dto.UserOrderDto;
 import com.anntly.order.pojo.Order;
 import com.anntly.order.vo.OrderParams;
 
@@ -40,4 +41,6 @@ public interface OrderService {
     List<PayTypeReport> queryReportPayType(Long restaurantId);
 
     void tackOrder(Long id);
+
+    PageResult<UserOrderDto> queryUserOrders(String username,Integer status, Boolean type,Boolean payStatus, Integer page, Integer rows);
 }

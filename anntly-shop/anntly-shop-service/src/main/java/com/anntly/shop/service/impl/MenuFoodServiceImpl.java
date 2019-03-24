@@ -9,7 +9,9 @@ import com.anntly.shop.dto.FoodDto;
 import com.anntly.shop.dto.Node;
 import com.anntly.shop.dto.OrderDto;
 import com.anntly.shop.dto.OrderFood;
+import com.anntly.shop.mapper.DeskMapper;
 import com.anntly.shop.mapper.MenuFoodMapper;
+import com.anntly.shop.pojo.Desk;
 import com.anntly.shop.pojo.MenuFood;
 import com.anntly.shop.service.MenuFoodService;
 import com.anntly.shop.vo.MenuFoodParams;
@@ -38,6 +40,8 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     @Autowired
     private MenuFoodMapper menuFoodMapper;
 
+    @Autowired
+    private DeskMapper deskMapper; // 不建议这样使用
 
     @Override
     public PageResult<MenuFood> queryPage(PageRequest pageRequest, MenuFoodParams params) {
@@ -151,6 +155,16 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     }
 
     @Override
+    public List<OrderDto> queryOrderDtosByDeskId(Long deskId) {
+        // 先根据餐桌Id查询菜单Id
+        Desk desk = deskMapper.selectByPrimaryKey(deskId);
+        // 查询菜单信息
+        List<OrderDto> orderDtos = queryOrderDtosByMenuId(desk.getMenuId());
+
+        return orderDtos;
+    }
+
+    @Override
     public List<OrderFood> queryRecommendedFoods(Long menuId) {
         List<OrderFood> orderFoods = menuFoodMapper.queryRecommendedFoods(menuId);
         if(CollectionUtils.isEmpty(orderFoods)){
@@ -158,4 +172,6 @@ public class MenuFoodServiceImpl implements MenuFoodService {
         }
         return orderFoods;
     }
+
+
 }

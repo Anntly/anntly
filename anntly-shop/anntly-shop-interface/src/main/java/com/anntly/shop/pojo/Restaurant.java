@@ -70,7 +70,7 @@ public class Restaurant {
 
     private String license;
 
-    // 餐厅状态
+    // 餐厅状态 0 封禁  1 营业中 2 休息 3审核中
     private Integer status;
 
     private BigDecimal deliveryArea;

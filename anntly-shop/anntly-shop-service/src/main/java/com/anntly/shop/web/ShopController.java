@@ -63,8 +63,6 @@ public class ShopController {
         // 获取登录用户
         AnOauth2Utils anOauth2Utils = new AnOauth2Utils();
         UserInfo user = anOauth2Utils.getUserJwtFromHeader(request);
-        // TODO 需要与userId相绑定，目前先查询出所有店铺
-        // Long userId = 1L;
         return ResponseEntity.ok(restaurantService.queryNodes(user.getId()));
     }
 
@@ -100,9 +98,6 @@ public class ShopController {
     @ApiOperation(value="删除单个餐厅", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable("id") Long id){
         // TODO 待定不删除餐厅下的所有房间，餐桌
-        if(null == id){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         restaurantService.deleteRestaurant(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -110,12 +105,15 @@ public class ShopController {
     @DeleteMapping("/ids")
     @PreAuthorize("hasAuthority('REMOVE_SHOP')")
     @ApiOperation(value="批量删除餐厅", notes="无")
-    public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
+    public ResponseEntity<Void> deleteRestaurant(@RequestParam("ids") List<Long> ids){
         // TODO 待定不删除餐厅下的所有房间，餐桌
-        if(null == ids){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         restaurantService.deleteRestaurants(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/id")
+    @ApiOperation(value="根据id查询餐厅信息", notes="无")
+    public ResponseEntity<Restaurant> queryRestaurantById(@RequestParam("id") Long id){
+        return ResponseEntity.ok(restaurantService.queryRestaurantById(id));
     }
 }

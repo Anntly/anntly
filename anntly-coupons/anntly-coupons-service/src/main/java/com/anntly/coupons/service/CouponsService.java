@@ -2,10 +2,13 @@ package com.anntly.coupons.service;
 
 import com.anntly.common.vo.PageRequest;
 import com.anntly.common.vo.PageResult;
+import com.anntly.coupons.dto.CouponsDto;
 import com.anntly.coupons.pojo.Coupons;
 import com.anntly.coupons.vo.CouponsParams;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author soledad
@@ -27,5 +30,11 @@ public interface CouponsService {
 
     void changeStatus(String id);
 
-    Coupons queryCouponsById(String id);
+    Coupons queryCouponsById(String couponsId,Long userId);
+
+    List<Coupons> queryCouponsByResaurantId(Long restaurantId);
+
+    void receiveCoupon(Long id, String couponsId, Long restaurantId);
+
+    Map<String,List<CouponsDto>> queryMyCoupons(Long id, BigDecimal totalFee);
 }

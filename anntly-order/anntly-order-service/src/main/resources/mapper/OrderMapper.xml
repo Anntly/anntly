@@ -38,6 +38,88 @@
         </if>
     </select>
 
+    <sql id="userOrder">
+        <where>
+            <if test="status != null">
+                and o.`status` =#{status}
+            </if>
+            <if test="type != null">
+                and o.`type` =#{type}
+            </if>
+            <if test="payStatus != null">
+                and o.pay_status =#{payStatus}
+            </if>
+            and o.user_name = #{username}
+            and o.data_status = 1
+
+        </where>
+    </sql>
+
+    <resultMap type="com.anntly.order.dto.UserOrderDto" id="orderResultMap">
+        <id column="id" property="id"/>
+        <result column="type" property="type"></result>
+        <result column="restaurant_id" property="restaurantId"></result>
+        <result column="restaurant_name" property="restaurantName"></result>
+        <result column="note" property="note"></result>
+        <result column="address" property="address"></result>
+        <result column="delivery_mode" property="deliveryMode"></result>
+        <result column="box_fee" property="boxFee"></result>
+        <result column="shipping_fee" property="shippingFee"></result>
+        <result column="desk_id" property="deskId"></result>
+        <result column="desk_name" property="deskName"></result>
+        <result column="pay_type" property="payType"></result>
+        <result column="pay_status" property="payStatus"></result>
+        <result column="status" property="status"></result>
+        <result column="need_pay" property="needPay"></result>
+        <result column="real_pay" property="realPay"></result>
+        <result column="create_time" property="createTime"></result>
+        <collection property="orderDetails" column="id" javaType="java.util.List"
+                    ofType="com.anntly.order.pojo.OrderDetail" select="queryDetails">
+            <id column="did" property="id"/>
+            <result column="food_id" property="foodId"/>
+            <result column="name" property="name"/>
+            <result column="price" property="price"/>
+            <result column="amount" property="amount"/>
+            <result column="sale_price" property="salePrice"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryUserOrders" resultMap="orderResultMap">
+        select
+			o.id,
+			o.type,
+			o.restaurant_id,
+			o.restaurant_name,
+			o.note,
+			o.address,
+			o.delivery_mode,
+			o.box_fee,
+			o.shipping_fee,
+			o.desk_id,
+			o.desk_name,
+			o.pay_type,
+			o.pay_status,
+			o.`status`,
+			o.need_pay,
+			o.real_pay,
+			o.create_time
+        from
+			tb_order o
+
+        <include refid="userOrder" />
+    </select>
+    <select id="queryDetails" parameterType="long" resultType="com.anntly.order.pojo.OrderDetail">
+        select
+            d.id as did,
+			d.food_id,
+			d.name,
+			d.price,
+			d.amount,
+			d.sale_price
+			from tb_order_detail d
+			where d.order_id = #{id} and d.data_status = 1
+    </select>
+
 
     <update id="updateBatch" parameterType="java.util.List">
         update tb_order

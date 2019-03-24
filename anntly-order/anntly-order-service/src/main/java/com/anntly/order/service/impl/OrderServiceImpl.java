@@ -10,11 +10,7 @@ import com.anntly.common.vo.PageResult;
 import com.anntly.coupons.pojo.Coupons;
 import com.anntly.order.client.CouponsClient;
 import com.anntly.order.client.MenuFoodClient;
-import com.anntly.order.config.WebSocket;
-import com.anntly.order.dto.PayTypeDto;
-import com.anntly.order.dto.PayTypeReport;
-import com.anntly.order.dto.ReportDto;
-import com.anntly.order.dto.Stock;
+import com.anntly.order.dto.*;
 import com.anntly.order.mapper.OrderMapper;
 import com.anntly.order.pojo.Order;
 import com.anntly.order.pojo.OrderDetail;
@@ -68,6 +64,16 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderMapper.queryPage(params);
         PageInfo<Order> pageInfo = new PageInfo<>(orders);
         return new PageResult<>(pageInfo.getTotal(),(long)pageInfo.getPages(),orders);
+    }
+
+    @Override
+    public PageResult<UserOrderDto> queryUserOrders(String username,Integer status,
+                                              Boolean type, Boolean payStatus,
+                                              Integer page, Integer rows) {
+        PageHelper.startPage(page,rows);
+        List<UserOrderDto> orderDtos = orderMapper.queryUserOrders(username,status,type,payStatus);
+        PageInfo<UserOrderDto> pageInfo = new PageInfo<>(orderDtos);
+        return new PageResult<>(pageInfo.getTotal(),(long)pageInfo.getPages(),orderDtos);
     }
 
     @Override
@@ -132,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
         }
         if(!StringUtils.isEmpty(order.getCouponsId())) {
             // 查询并使用优惠券
-            Coupons coupons = couponsClient.queryCouponsById(order.getCouponsId());
+            Coupons coupons = couponsClient.queryCouponsById(order.getCouponsId(),order.getUserId());
             // 当优惠券存在
             if (coupons != null && coupons.getDataStatus()) {
                 // 是否满足最低消费
@@ -235,6 +241,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(2);
         orderMapper.updateByPrimaryKeySelective(order);
     }
+
 
     @Override
     @Transactional

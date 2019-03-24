@@ -77,7 +77,7 @@ public class MenuFoodController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADD_MENU')")
     @ApiOperation(value="增添餐厅菜单列表", notes="与餐厅Id绑定")
-    public ResponseEntity<Void> saveRestaurant(MenuFood menuFood){
+    public ResponseEntity<Void> saveMenuFood(MenuFood menuFood){
         // TODO 需要与餐厅Id相绑定
         if(null == menuFood){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -89,7 +89,7 @@ public class MenuFoodController {
     @PutMapping
     @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="修改餐厅菜单列表", notes="与餐厅Id绑定")
-    public ResponseEntity<Void> updateRestaurant(MenuFood menuFood){
+    public ResponseEntity<Void> updateMenuFood(MenuFood menuFood){
         // TODO 需要与餐厅Id相绑定
         if(null == menuFood){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -102,9 +102,6 @@ public class MenuFoodController {
     @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="删除单个菜品", notes="命名需要与数据库对应")
     public ResponseEntity<Void> deleteFood(@PathVariable("id") Long id){
-        if(null == id){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         menuFoodService.deleteFood(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -112,10 +109,7 @@ public class MenuFoodController {
     @DeleteMapping("/ids")
     @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="批量删除菜品", notes="无")
-    public ResponseEntity<Void> deleteFood(@RequestParam("ids") List<Long> ids){
-        if(null == ids){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
+    public ResponseEntity<Void> deleteFoods(@RequestParam("ids") List<Long> ids){
         menuFoodService.deleteFoods(ids);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -123,9 +117,6 @@ public class MenuFoodController {
     @RequestMapping(value = "/stock/reduce",method = RequestMethod.GET)
     @ApiOperation(value="根据id列表获取价格折扣库存", notes="无")
     public ResponseEntity<Void> rudeceStock(@RequestParam("stocks") String stocks){
-        if(null == stocks){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         List<Stock> stockList = JsonUtils.parseList(stocks, Stock.class);
         menuFoodService.rudeceStock(stockList);
 
@@ -135,28 +126,25 @@ public class MenuFoodController {
     @GetMapping("/ids")
     @ApiOperation(value="根据id列表获取价格折扣库存", notes="无")
     public ResponseEntity<List<FoodDto>> queryFoodsByIds(@RequestParam("ids") List<Long> ids){
-        if(null == ids){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         return ResponseEntity.ok(menuFoodService.queryFoodsByIds(ids));
     }
 
     @GetMapping("/nodes")
     @ApiOperation(value="根据分类mCid查询nodes", notes="无")
     public ResponseEntity<List<FoodDto>> queryNodesByCid(@RequestParam("mCid") Long mCid){
-        if(null == mCid){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         return ResponseEntity.ok(menuFoodService.queryNodesByCid(mCid));
     }
 
     @GetMapping("/orders")
     @ApiOperation(value="根据菜单Id查询下单信息", notes="无")
     public ResponseEntity<List<OrderDto>> queryOrderDtosByMenuId(@RequestParam("menuId") Long menuId){
-        if(null == menuId){
-            throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
-        }
         return ResponseEntity.ok(menuFoodService.queryOrderDtosByMenuId(menuId));
+    }
+
+    @GetMapping("/desk/menu")
+    @ApiOperation(value="根据餐桌Id查询菜单信息", notes="无")
+    public ResponseEntity<List<OrderDto>> queryOrderDtosByDeskId(@RequestParam("deskId") Long deskId){
+        return ResponseEntity.ok(menuFoodService.queryOrderDtosByDeskId(deskId));
     }
 
     @GetMapping("/recommended")

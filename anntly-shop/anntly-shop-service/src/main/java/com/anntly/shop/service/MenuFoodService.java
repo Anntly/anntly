@@ -47,4 +47,6 @@ public interface MenuFoodService {
     List<OrderDto> queryOrderDtosByMenuId(Long menuId);
 
     List<OrderFood> queryRecommendedFoods(Long menuId);
+
+    List<OrderDto> queryOrderDtosByDeskId(Long deskId);
 }

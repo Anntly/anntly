@@ -26,7 +26,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers().permitAll()
+                .antMatchers("/mfood/desk/menu").permitAll()
                 .antMatchers("/**").authenticated();
     }
 

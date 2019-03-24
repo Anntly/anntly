@@ -62,6 +62,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    public Restaurant queryRestaurantById(Long id) {
+        return restaurantMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     @Transactional
     public void saveRestaurant(Restaurant restaurant) {
         restaurant.setAddress(queryAddress(restaurant));

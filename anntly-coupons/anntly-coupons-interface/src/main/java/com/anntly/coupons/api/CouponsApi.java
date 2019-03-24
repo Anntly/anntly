@@ -3,6 +3,7 @@ package com.anntly.coupons.api;
 import com.anntly.coupons.pojo.Coupons;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author soledad
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 public interface CouponsApi {
 
-    @GetMapping("/restaurant/{id}")
-    Coupons queryCouponsById(@PathVariable("id") String id);
+    @GetMapping("/restaurant/usecoupon")
+    Coupons queryCouponsById(@RequestParam("couponsId") String couponsId,
+                             @RequestParam("userId") Long userId);
 }

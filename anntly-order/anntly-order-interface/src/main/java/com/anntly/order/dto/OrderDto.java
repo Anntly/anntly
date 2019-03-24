@@ -22,5 +22,8 @@ public class OrderDto {
 
     private String deskName;
 
+    // 优惠券Id
+    private String couponsId;
+
     private String orderDetails;
 }

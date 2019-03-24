@@ -106,13 +106,12 @@ public class CouponsController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/restaurant/{id}")
-    @ApiOperation(value="根据ID查询优惠券", notes="无")
-    public ResponseEntity<Coupons> queryCouponsById(@PathVariable("id") String id){
+    @GetMapping("/restaurant/usecoupon")
+    @ApiOperation(value="根据优惠券Id和用户Id使用优惠券", notes="无")
+    public ResponseEntity<Coupons> queryCouponsById(@RequestParam("couponsId") String couponsId,
+                                                    @RequestParam("userId") Long userId){
         // TODO 未使用分布式事务 可能会导致优惠券被扣却未被使用
-        if(null == id){
-            return ResponseEntity.ok(null);
-        }
-        return ResponseEntity.ok(couponsService.queryCouponsById(id));
+        return ResponseEntity.ok(couponsService.queryCouponsById(couponsId,userId));
     }
+
 }

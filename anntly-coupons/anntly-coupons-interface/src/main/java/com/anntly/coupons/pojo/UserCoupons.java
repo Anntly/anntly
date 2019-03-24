@@ -34,10 +34,8 @@ public class UserCoupons {
     private Integer couponsStatus;
 
     @JsonProperty("create_time")
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date createTime;
 
     @JsonProperty("end_time")
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date endTime;
 }

@@ -30,4 +30,6 @@ public interface RestaurantService {
     void deleteRestaurants(List<Long> ids);
 
     List<RestaurantNode> queryNodes(Long userId);
+
+    Restaurant queryRestaurantById(Long id);
 }

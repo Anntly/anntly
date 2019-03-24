@@ -53,7 +53,7 @@ public class MenuController {
     @PostMapping
     @PreAuthorize("hasAuthority('ADD_MENU')")
     @ApiOperation(value="增添餐厅菜单列表", notes="与餐厅Id绑定")
-    public ResponseEntity<Void> saveRestaurant(Menu menu){
+    public ResponseEntity<Void> saveMenu(Menu menu){
         // TODO 需要与餐厅Id相绑定
         if(null == menu){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -65,7 +65,7 @@ public class MenuController {
     @PutMapping
     @PreAuthorize("hasAuthority('UPDATE_MENU')")
     @ApiOperation(value="修改餐厅菜单列表", notes="与餐厅Id绑定")
-    public ResponseEntity<Void> updateRestaurant(Menu menu){
+    public ResponseEntity<Void> updateMenu(Menu menu){
         // TODO 需要与餐厅Id相绑定
         if(null == menu){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
@@ -79,7 +79,7 @@ public class MenuController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('DELETE_MENU')")
     @ApiOperation(value="删除单个菜品分类", notes="命名需要与数据库对应")
-    public ResponseEntity<Void> deleteMenuCat(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id){
         if(null == id){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }
@@ -90,7 +90,7 @@ public class MenuController {
     @DeleteMapping("/ids")
     @PreAuthorize("hasAuthority('DELETE_MENU')")
     @ApiOperation(value="批量删除菜品分类", notes="无")
-    public ResponseEntity<Void> deleteMenuCat(@RequestParam("ids") List<Long> ids){
+    public ResponseEntity<Void> deleteMenu(@RequestParam("ids") List<Long> ids){
         if(null == ids){
             throw new AnnException(ExceptionEnum.PARAMETER_ERROR);
         }

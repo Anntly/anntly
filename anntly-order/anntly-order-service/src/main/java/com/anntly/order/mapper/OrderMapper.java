@@ -3,6 +3,7 @@ package com.anntly.order.mapper;
 import com.anntly.common.mapper.BaseMapper;
 import com.anntly.order.dto.PayTypeDto;
 import com.anntly.order.dto.ReportDto;
+import com.anntly.order.dto.UserOrderDto;
 import com.anntly.order.pojo.Order;
 import com.anntly.order.vo.OrderParams;
 import org.apache.ibatis.annotations.Param;
@@ -35,4 +36,6 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     @Select("select pay_type, count(*) as num from tb_order where pay_status = 1 and `status` = 5 and restaurant_id = #{restaurantId} GROUP BY pay_type")
     List<PayTypeDto> queryReportPayType(@Param("restaurantId") Long restaurantId);
+
+    List<UserOrderDto> queryUserOrders(@Param("username") String username,@Param("status") Integer status,@Param("type") Boolean type,@Param("payStatus") Boolean payStatus);
 }

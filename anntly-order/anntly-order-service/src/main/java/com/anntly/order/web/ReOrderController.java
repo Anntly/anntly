@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author soledad
@@ -74,6 +73,7 @@ public class ReOrderController {
         order.setDeskName(orderDto.getDeskName());
         order.setNote(orderDto.getNote());
         order.setOrderDetails(orderDetails);
+        order.setCouponsId(orderDto.getCouponsId());
         orderService.saveOrder(order,request);
         // 将未接单状态的 order信息发给商家
         // webSocket.sendOneMessage(orderDto.getRestaurantId(), "你有一条新的订单");

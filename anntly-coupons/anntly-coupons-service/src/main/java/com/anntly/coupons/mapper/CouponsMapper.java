@@ -4,6 +4,7 @@ import com.anntly.common.mapper.BaseMapper;
 import com.anntly.coupons.pojo.Coupons;
 import com.anntly.coupons.vo.CouponsParams;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -28,6 +29,12 @@ public interface CouponsMapper extends BaseMapper<Coupons> {
     @Update("update tb_coupons set status = not status where id = #{id}")
     void changeStatus(@Param("id") String id);
 
-    @Update("update tb_coupons set num = num -1 where num > 0 and id = #{id}")
-    int reduceNum(@Param("id") String id);
+    @Update("update tb_user_coupons set coupons_status = 0 where coupons_id = #{couponsId} and user_id = #{userId}")
+    void useCoupon(@Param("couponsId") String couponsId,@Param("userId") Long userId);
+
+    @Select("select * from tb_coupons where restaurant_id = #{restaurantId} and data_status = 1 and `status` = 1")
+    List<Coupons> queryCouponsByResaurantId(@Param("restaurantId") Long restaurantId);
+
+    @Select("select count(*) from tb_user_coupons where coupons_id = #{couponsId}")
+    int isReceive(@Param("couponsId") String couponsId);
 }

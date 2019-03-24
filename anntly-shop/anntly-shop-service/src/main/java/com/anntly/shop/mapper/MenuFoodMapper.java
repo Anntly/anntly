@@ -48,4 +48,6 @@ public interface MenuFoodMapper extends BaseMapper<MenuFood> {
 
     @Select("select id,m_cid,show_name,price,discount,pic from tb_menu_food where menu_id = #{menuId} and recommend = 1")
     List<OrderFood> queryRecommendedFoods(@Param("menuId") Long menuId);
+
+
 }

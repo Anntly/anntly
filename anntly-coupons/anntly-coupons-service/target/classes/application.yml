@@ -4,8 +4,8 @@ spring:
   application:
     name: coupons-service
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: true
   datasource:
     url: jdbc:mysql://192.168.25.129:3306/anntly?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&useAffectedRows=true&allowMultiQueries=true
     username: root

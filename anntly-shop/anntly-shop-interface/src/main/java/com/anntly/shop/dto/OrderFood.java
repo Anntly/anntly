@@ -2,6 +2,7 @@ package com.anntly.shop.dto;
 
 import lombok.Data;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 /**
@@ -25,4 +26,7 @@ public class OrderFood {
     private Integer discount;
 
     private String pic;
+
+    @Transient
+    private Integer num = 0;
 }
