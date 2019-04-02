@@ -17,6 +17,6 @@ import java.util.List;
  */
 public interface UserCouponsMapper extends BaseMapper<UserCoupons> {
 
-    @Select("select c.* from tb_coupons c, tb_user_coupons uc where uc.user_id = #{userId} and uc.coupons_id = c.id")
+    @Select("select c.* from tb_coupons c, tb_user_coupons uc where uc.user_id = #{userId} and uc.coupons_id = c.id and c.status = 1")
     List<Coupons> queryCouponsByUserId(@Param("userId") Long userId);
 }

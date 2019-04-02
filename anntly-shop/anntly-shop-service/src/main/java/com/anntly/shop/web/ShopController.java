@@ -21,6 +21,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -116,4 +118,5 @@ public class ShopController {
     public ResponseEntity<Restaurant> queryRestaurantById(@RequestParam("id") Long id){
         return ResponseEntity.ok(restaurantService.queryRestaurantById(id));
     }
+
 }

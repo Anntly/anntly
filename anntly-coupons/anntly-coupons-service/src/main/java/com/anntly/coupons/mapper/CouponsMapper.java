@@ -26,6 +26,8 @@ public interface CouponsMapper extends BaseMapper<Coupons> {
      */
     int updateBatch(@Param("list") List<String> ids);
 
+    int expireCoupons(@Param("list") List<String> ids);
+
     @Update("update tb_coupons set status = not status where id = #{id}")
     void changeStatus(@Param("id") String id);
 
@@ -37,4 +39,7 @@ public interface CouponsMapper extends BaseMapper<Coupons> {
 
     @Select("select count(*) from tb_user_coupons where coupons_id = #{couponsId}")
     int isReceive(@Param("couponsId") String couponsId);
+
+    @Select("select * from tb_coupons where data_status = 1 and `status` = 1")
+    List<Coupons> queryCoupons();
 }

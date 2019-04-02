@@ -15,6 +15,7 @@ import com.anntly.coupons.vo.CouponsParams;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -169,5 +170,22 @@ public class CouponsServiceImpl implements CouponsService {
         result.put("coupons",ableCoupons);
         result.put("disabledCoupons",disableCoupons);
         return result;
+    }
+
+    // 更新优惠券的状态
+    @Scheduled(cron="0 0 23 * * ?")
+    public void updateCouponsStatus(){
+        // 查询所有未过期的优惠券
+        List<Coupons> coupons = couponsMapper.queryCoupons();
+        // 遍历优惠券，判断过期时间，保存id
+        List<String> ids = new ArrayList<>();
+        Date date = new Date();
+        for (Coupons coupon : coupons) {
+            if(coupon.getEndTime().compareTo(date) < 0){
+                ids.add(coupon.getId());
+            }
+        }
+        // 批量更新优惠券状态
+        couponsMapper.expireCoupons(ids);
     }
 }

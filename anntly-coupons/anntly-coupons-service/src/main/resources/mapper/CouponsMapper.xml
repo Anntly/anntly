@@ -47,5 +47,20 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+
+    <update id="expireCoupons" parameterType="java.util.List">
+        update tb_coupons
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="status =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item} then 0
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>
 
